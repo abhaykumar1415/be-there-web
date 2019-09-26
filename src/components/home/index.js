@@ -14,22 +14,25 @@ import AttendancePage from '../attendancePage/index'
 import Header from '../header/index';
 import Cookie from '../../services/cookie';
 import API from '../../services/api';
+import Card from '@material-ui/core/Card';
 
+const options = ['PRESENT','WFH'];
 
-
-const options = ['present','WFH'];
-   
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        open:false,
-        selectedIndex:'0',
-        redirect:false,
-        anchorRef:null,
-        currentDate:'',
-        selectedOption: 'present',
-        user: {}
+      open:false,
+      selectedIndex:'0',
+      redirect:false,
+      anchorRef:null,
+      currentDate:'',
+      selectedOption: 'PRESENT',
+      user: {},
+      geoLocation: {
+        lat: 0,
+        lng: 0
+      },
     }
   }
 
@@ -49,51 +52,74 @@ class Home extends Component {
     this.setState({selectedIndex:index});
   }
 
-    handleClose = (event) => {
-      if (this.state.anchorRef && this.state.anchorRef.contains(event.target)) {
-        return;
-      }
-      this.setState({open:false})
+  handleClose = (event) => {
+    if (this.state.anchorRef && this.state.anchorRef.contains(event.target)) {
+      return;
     }
+    this.setState({open:false})
+  }
 
-    handleSubmit = async () => {
-      console.log(' In submit button');
-      console.log(' this.state.user in  :', this.state.user._id);
-      let result = await API.postAttendance(this.state.user._id, {status: this.state.selectedOption});
-      console.log(" attendance submit result :", result);
-      // this.setState({redirect:true});
-    }
+  handleSubmit = async () => {
+    console.log(' In submit button');
+    console.log(' this.state.user in  :', this.state.user._id);
+    let result = await API.postAttendance(this.state.user._id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
+    console.log(" attendance submit result :", result);
+    // this.setState({redirect:true});
 
-    async componentDidMount() {
-      let user = Cookie.getCookie('user');
-      console.log(' User in did  mouht :', user);
-      this.setState({user});
-      let date=new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
-      this.setState({currentDate:date});
-      let userFound = await API.postUser({email:user.email});
-      console.log('userFound :', userFound);
+  }
+
+  async componentDidMount() {
+    navigator.geolocation.getCurrentPosition (
+      (position) => {
+        let lat = position.coords.latitude
+        let lng = position.coords.longitude
+        console.log("getCurrentPosition Success " + lat + lng) // logs position correctly
+        this.setState({
+          geoLocation: {
+            lat: lat,
+            lng: lng
+          }
+        })
+      },
+      (error) => {
+         this.props.displayError("Error dectecting your geoLocation");
+        console.error(JSON.stringify(error))
+      },
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+    ) 
+    let user = Cookie.getCookie('user');
+    console.log(' User in did  mouht :', user);
+    this.setState({user});
+    let date=new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
+    this.setState({currentDate:date});
+    let userFound = await API.postUser({email:user.email});
+    console.log('userFound :', userFound);
+    
     }   
-    render () {
+
+    
+  render () {
     
     return(
-        <div className="wrapper_content">
-            <div><Header/></div>
+      <div className="wrapper_content">
+          <div><Header/></div>
+          
         <div >
-        {console.log('state :', this.state.user.name)} 
-            {
+            {/* {console.log('state :', this.state.user.name)}  */}
+            {console.log("latlng",this.state.geoLocation)}
+          {
           this.state.redirect ?
           (
             <AttendancePage
               empName={this.state.user.name}
             />
           ):
+          <Card className="attendanceCard">
           <div className="EmpPageWrapper">
-            <div>
-              <div className="text-align margin_bottom">
-                <h1>{this.state.user.name}</h1>
+              <div className="text-align cardHeader">
+               {this.state.user.name}
               </div>
-            </div>
-            <div className="text-align margin_bottom">{this.state.currentDate}</div>
+            <div className="text-align margin_bottom-40 font_style color">{this.state.currentDate}</div>
             <div className="button_wrapper ">
               <ButtonGroup
                 variant="contained"
@@ -112,46 +138,46 @@ class Home extends Component {
                   <ArrowDropDownIcon />
                   </Button>
               </ButtonGroup>
-          <Popper open={this.state.open} anchorEl={this.state.anchorRef} transition disablePortal>
-              {({ TransitionProps, placement }) => (
+              <Popper open={this.state.open} anchorEl={this.state.anchorRef} transition disablePortal>
+                {({ TransitionProps, placement }) => (
                   <Grow
                   {...TransitionProps}
                   style={{
                       transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
                   }}
                   >
-              <Paper id="menu-list-grow" >
-                  <ClickAwayListener onClickAway={this.handleClose}>
-                  <MenuList>
-                  { options.map((option, index) => (
-                    <MenuItem
-                      key={option}
-                      disabled={index === 2}
-                      selected={index === this.state.selectedIndex}
-                      onClick={event => this.handleMenuItemClick(event, index)}
-                    >
-                      {option}
-                    </MenuItem>
-                  ))}
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={this.handleSubmit}
-          className="margin-left">
-            Submit
-        </Button>
-    
+                  <Paper id="menu-list-grow" >
+                    <ClickAwayListener onClickAway={this.handleClose}>
+                    <MenuList>
+                      { options.map((option, index) => (
+                        <MenuItem
+                          key={option}
+                          disabled={index === 2}
+                          selected={index === this.state.selectedIndex}
+                          onClick={event => this.handleMenuItemClick(event, index)}
+                        >
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </MenuList>
+                    </ClickAwayListener>
+                  </Paper>
+                  </Grow>
+                )}
+              </Popper>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={this.handleSubmit}
+                className="margin-left">
+                  Submit
+              </Button>
+            </div>
           </div>
-          </div>
-      }
+          </Card>
+        }
         </div>
-        </div>
+      </div>
     )
   }
    
