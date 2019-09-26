@@ -116,9 +116,9 @@ class Header extends Component{
               >
                 <MenuIcon />
               </IconButton>
-              <Typography variant="h6" noWrap>
-                Persistent drawer
-              </Typography>
+              <div  className="margin-left">
+                QED42
+              </div>
             </Toolbar>
           </AppBar>
           <Drawer
@@ -152,11 +152,7 @@ class Header extends Component{
               [classes.contentShift]: this.state.open,
             })}
           >
-            
-              {/* <EmployeePage
-                name={this.props.result}
-
-              /> */}
+          
           </main>
         </div>
         )
