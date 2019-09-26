@@ -7,12 +7,14 @@ function App() {
   const checkCookie = () => {
     console.log(' in getcookie');
     let loginStatus = Cookie.getLoginStatus();
-    return loginStatus;
+    console.log(' xxxxxxx ---- loginStatus :', loginStatus);
+    return loginStatus ? loginStatus : null;
   }
   return (
     <div className="wrapper">
       {
-        checkCookie() ? <Home/> : <Login/>
+        // checkCookie() ? <Home/> : <Login/>
+        Cookie.getLoginStatus() !== undefined ? <Home/> : <Login/>
       }
     </div>
   );
