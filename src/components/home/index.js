@@ -107,10 +107,7 @@ class Home extends Component {
   return(
     <div className="wrapper_content">
       <div><Header/></div>
-          
         <div  className="main_class">
-            {/* {console.log('state :', this.state.user.name)}  */}
-            {console.log("latlng",this.state.geoLocation)}
           {
           this.state.redirect ?
           (
@@ -118,8 +115,8 @@ class Home extends Component {
               empName={this.state.user.name}
             />
           ):
-          <div className="attendanceCard" style={{ borderRadius: '40px'}}>
-          <CardContent className="EmpPageWrapper">
+          <div className="attendanceCard" style={{ borderRadius: '40px',marginTop:'30%'}}>
+            <CardContent className="EmpPageWrapper">
               <div className="text-align cardHeader">
                {this.state.user.name}
               </div>
@@ -131,7 +128,15 @@ class Home extends Component {
                 ref={this.state.anchorRef}
                 aria-label="split button"
                 className="margin-right">
-                  <Button  style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderTopLeftRadius: '12px',borderBottomLeftRadius: '12px'}} onClick={this.handleClick}>{options[this.state.selectedIndex]}</Button>
+                  <Button  
+                    style={{
+                      backgroundColor:'#EB1F4A',
+                      color:'#FFFFFF',
+                      borderTopLeftRadius: '12px',
+                      borderBottomLeftRadius: '12px'
+                      }}
+                      onClick={this.handleClick}>{options[this.state.selectedIndex]}
+                  </Button>
                   <Button
                       style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '12px'}}
                       size="small"
@@ -139,7 +144,7 @@ class Home extends Component {
                       aria-haspopup="true"
                       onClick={this.handleToggle}
                   >
-                  <ArrowDropDownIcon />
+                    <ArrowDropDownIcon />
                   </Button>
               </ButtonGroup>
               <Popper open={this.state.open} anchorEl={this.state.anchorRef} transition disablePortal>
@@ -152,18 +157,18 @@ class Home extends Component {
                   >
                   <Paper id="menu-list-grow" >
                     <ClickAwayListener onClickAway={this.handleClose}>
-                    <MenuList>
-                      { options.map((option, index) => (
-                        <MenuItem
-                          key={option}
-                          disabled={index === 2}
-                          selected={index === this.state.selectedIndex}
-                          onClick={event => this.handleMenuItemClick(event, index)}
-                        >
-                          {option}
-                        </MenuItem>
+                      <MenuList>
+                        { options.map((option, index) => (
+                          <MenuItem
+                            key={option}
+                            disabled={index === 2}
+                            selected={index === this.state.selectedIndex}
+                            onClick={event => this.handleMenuItemClick(event, index)}
+                          >
+                            {option}
+                          </MenuItem>
                       ))}
-                    </MenuList>
+                     </MenuList>
                     </ClickAwayListener>
                   </Paper>
                   </Grow>
@@ -177,11 +182,11 @@ class Home extends Component {
                   Submit
               </Button>
             </CardActions>
-          </CardContent>
+            </CardContent>
           </div>
         }
         </div>
-      </div>
+    </div>
     )
   }
    

@@ -96,10 +96,10 @@ class Header extends Component{
     this.setState({open:false})
   };
 
-    render(){
-        return(
-          <div >
-          <CssBaseline />
+  render(){
+    return(
+      <div>
+        <CssBaseline />
           <AppBar
             position="fixed"
             className={clsx(classes.appBar, {
@@ -124,7 +124,6 @@ class Header extends Component{
           </AppBar>
           <Drawer
             className={classes.drawer}
-            // variant="persistent"
             anchor="left"
             open={this.state.open}
             onClose={this.handleDrawerClose}
@@ -139,14 +138,12 @@ class Header extends Component{
                 </ListItem>
               ))}
             </List>
-            
           </Drawer>
           <main
             className={clsx(classes.content, {
               [classes.contentShift]: this.state.open,
             })}
           >
-          
           </main>
         </div>
         )
