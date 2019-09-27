@@ -68,7 +68,7 @@ class Home extends Component {
 
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     navigator.geolocation.getCurrentPosition (
       (position) => {
         let lat = position.coords.latitude
@@ -82,7 +82,7 @@ class Home extends Component {
         })
       },
       (error) => {
-         this.props.displayError("Error dectecting your geoLocation");
+        //  this.props.displayError("Error dectecting your geoLocation");
         console.error(JSON.stringify(error))
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
