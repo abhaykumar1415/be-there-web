@@ -15,6 +15,8 @@ import Header from '../header/index';
 import Cookie from '../../services/cookie';
 import API from '../../services/api';
 import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
 
 const options = ['PRESENT','WFH'];
 
@@ -102,11 +104,11 @@ class Home extends Component {
     
   render () {
     
-    return(
-      <div className="wrapper_content">
-          <div><Header/></div>
+  return(
+    <div className="wrapper_content">
+      <div><Header/></div>
           
-        <div >
+        <div  className="main_class">
             {/* {console.log('state :', this.state.user.name)}  */}
             {console.log("latlng",this.state.geoLocation)}
           {
@@ -116,22 +118,22 @@ class Home extends Component {
               empName={this.state.user.name}
             />
           ):
-          <Card className="attendanceCard">
-          <div className="EmpPageWrapper">
+          <div className="attendanceCard" style={{ borderRadius: '40px'}}>
+          <CardContent className="EmpPageWrapper">
               <div className="text-align cardHeader">
                {this.state.user.name}
               </div>
-            <div className="text-align margin_bottom-40 font_style color">{this.state.currentDate}</div>
-            <div className="button_wrapper ">
+            <div className="text-align margin_bottom-40 font_style ">{this.state.currentDate}</div>
+            <CardActions className="button_wrapper ">
               <ButtonGroup
                 variant="contained"
-                color="primary"
+                style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '12px'}}
                 ref={this.state.anchorRef}
                 aria-label="split button"
                 className="margin-right">
-                  <Button onClick={this.handleClick}>{options[this.state.selectedIndex]}</Button>
+                  <Button  style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderTopLeftRadius: '12px',borderBottomLeftRadius: '12px'}} onClick={this.handleClick}>{options[this.state.selectedIndex]}</Button>
                   <Button
-                      color="primary"
+                      style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '12px'}}
                       size="small"
                       aria-owns={this.state.open ? 'menu-list-grow' : undefined}
                       aria-haspopup="true"
@@ -169,14 +171,14 @@ class Home extends Component {
               </Popper>
               <Button
                 variant="contained"
-                color="secondary"
+                style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '12px'}}
                 onClick={this.handleSubmit}
                 className="margin-left">
                   Submit
               </Button>
-            </div>
+            </CardActions>
+          </CardContent>
           </div>
-          </Card>
         }
         </div>
       </div>
