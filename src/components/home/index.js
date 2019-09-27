@@ -62,7 +62,9 @@ class Home extends Component {
   handleSubmit = async () => {
     console.log(' In submit button');
     console.log(' this.state.user in  :', this.state.user._id);
-    let result = await API.postAttendance(this.state.user._id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
+    let user_id = Cookie.getCookie('user')._id;
+    console.log(' User in handle submit :', user_id);
+    let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
     console.log(" attendance submit result :", result);
     // this.setState({redirect:true});
 

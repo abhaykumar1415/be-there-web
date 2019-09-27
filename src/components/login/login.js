@@ -16,9 +16,6 @@ class Login extends Component {
     
 	responseGoogle = (response) => {
 		console.log('google RES :', response);
-		this.setState({redirect:true});
-		this.setState({result:response.profileObj.name});
-		this.setState({email:response.profileObj.email});
 		console.log("email",this.state.email);
 		const pattern=/^[a-z0-9](\.?[a-z0-9]){5,}@qed42\.com$/;
 		const patternResult= pattern.test(response.profileObj.email);
@@ -30,6 +27,9 @@ class Login extends Component {
 			data: response.profileObj
 		}
 			Cookie.setCookie(payload);
+			this.setState({redirect:true});
+			this.setState({result:response.profileObj.name});
+			this.setState({email:response.profileObj.email});
 	}
 
 render() {
