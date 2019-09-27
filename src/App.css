@@ -5,8 +5,11 @@
 }
 
 .main_class{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: url(assets/image.png);
-  height: 225%;
+  height: 100vh;
 }
 .text-align{
   text-align: center;
@@ -18,7 +21,6 @@
 
 .button_wrapper{
   display: flex;
-  margin-left: 17%;
   margin-bottom: 10%;
 }
 
@@ -45,8 +47,6 @@
 }
 
 .attendanceCard{
-  /* margin: 50% 4% 4% 4%; */
-  /* margin-top:50%; */
   background-color: whitesmoke;
  
 }
