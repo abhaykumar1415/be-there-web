@@ -105,6 +105,7 @@ class Header extends Component{
             className={clsx(classes.appBar, {
               [classes.appBarShift]: this.state.open,
             })}
+            style={{backgroundColor:"#DD0130"}}
           >
             <Toolbar>
               <IconButton
@@ -131,13 +132,6 @@ class Header extends Component{
               paper: classes.drawerPaper,
             }}
           >
-            <div >
-              <IconButton onClick={this.handleDrawerClose}>
-              <ChevronLeftIcon />
-                {/* {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />} */}
-              </IconButton>
-            </div>
-            <Divider />
             <List>
               {['All Attendances','My Attendance'].map((text, index) => (
                 <ListItem button key={text}>

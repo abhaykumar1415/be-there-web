@@ -1,8 +1,13 @@
 .wrapper{
   display: flex;
   justify-content: center;
+ 
 }
 
+.main_class{
+  background: url(assets/image.png);
+  height: 225%;
+}
 .text-align{
   text-align: center;
 }
@@ -36,13 +41,14 @@
 .EmpPageWrapper{
   display: flex;
   flex-direction: column;
-  margin: 8% 0%;
+  /* margin: 8% 0%; */
 }
 
 .attendanceCard{
-  margin: 4%;
-  margin-top:50%;
+  /* margin: 50% 4% 4% 4%; */
+  /* margin-top:50%; */
   background-color: whitesmoke;
+ 
 }
 
 .margin-top{
@@ -63,7 +69,7 @@
   border-bottom: 1px solid gray;
   padding-bottom: 15px;
   margin-bottom: 10%;
-  color: cornflowerblue;
+  
 }
 
 .font_style{
@@ -73,4 +79,8 @@
 
 .color{
   color: cornflowerblue;
+}
+
+.bg_color{
+  background-color: #DD0130;
 }

@@ -11,7 +11,7 @@ function App() {
     return loginStatus ? loginStatus : null;
   }
   return (
-    <div className="wrapper">
+    <div className="wrapper" >
       {
         // checkCookie() ? <Home/> : <Login/>
         Cookie.getLoginStatus() !== undefined ? <Home/> : <Login/>
