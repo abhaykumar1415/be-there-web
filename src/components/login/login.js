@@ -7,7 +7,7 @@ import Cookie from '../../services/cookie';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import Button from '@material-ui/core/Button';
-
+import './login.css';
 class Login extends Component {
 	constructor(props){
 		super(props);
@@ -73,7 +73,7 @@ render() {
 					<GoogleLogin
 					clientId="785790539959-ea8fvttmkdin1kg307dlmg4pr1ekdmqg.apps.googleusercontent.com"
 					render={renderProps => (
-						<button onClick={renderProps.onClick} disabled={renderProps.disabled}>
+						<button onClick={renderProps.onClick} disabled={renderProps.disabled} className="googleBtn">
 							<img src={require("../../images/login.png")}/>
 						</button>
 					  )}
