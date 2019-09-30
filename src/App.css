@@ -14,7 +14,7 @@ body {
   justify-content: center;
   /* background: url(assets/image.png); */
   height: 102vh;
-  width: 57vh;
+  width: 100%;
 }
 .text-align{
   text-align: center;

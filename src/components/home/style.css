@@ -123,3 +123,23 @@
 .selected {
   box-shadow: 0px 0px 3vw #fff !important;
 }
+
+.responseWrapper{
+  width: 100%;
+  border: 1px solid;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  height: 61px;
+  background: #ffc008;
+}
+
+.responseText {
+  font-size: initial;
+  color: #1B5E20;
+  font-weight: 800;
+  font-family: monospace;
+}
+.loadingWrapper {
+  align-items: center
+}

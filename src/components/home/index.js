@@ -11,8 +11,8 @@ import ReactSwipe from 'react-swipe';
 import Hammer from 'hammerjs';
 import './style.css';
 import Snackbar from '@material-ui/core/Snackbar';
-
-
+import CircularProgress from '@material-ui/core/CircularProgress';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import { SwipeableList, SwipeableListItem } from '@sandstreamdev/react-swipeable-list';
 import '@sandstreamdev/react-swipeable-list/dist/styles.css';
 import { async } from 'q';
@@ -42,6 +42,7 @@ class Home extends Component {
       hasMarkedTodayAttendance: false,
       errorMsg: '',
       wfhDisabled: true,
+      loading: true
     }
   }
 
@@ -53,9 +54,8 @@ class Home extends Component {
   }
 
   handleOption = async (option) => {
-    console.log(' In submit button');
-    console.log(' this.state.user in  :', this.state.user._id);
-    window.navigator.vibrate([200, 100, 200]);
+    window.navigator.vibrate(100);
+    // window.navigator.vibrate([200, 100, 200]);
     this.setState({selectedOption: option});
 
     // let user_id = Cookie.getCookie('user')._id;
@@ -71,33 +71,36 @@ class Home extends Component {
     
   }
 
-  handleSwipe(){
-    console.log('swipe')
-     // let user_id = Cookie.getCookie('user')._id;
-    // console.log(' User in handle submit :', user_id);
-    // let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
-    // console.log(" attendance submit result :", result);
-    // if (result.success ) {
-
-    // } else {
-    //   window.navigator.vibrate([200, 100, 200]);
-    //   this.setState({open:true, errorMsg: result.msg});
-    // }
-    this.setState({showSlider: false});
+  handleSwipe = async () => {
+    let user_id = Cookie.getCookie('user')._id;
+    let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
+    if (result.success ) {
+      window.navigator.vibrate(100);
+      this.setState({showSlider: false});
+      this.setState({open:true, errorMsg: result.msg, hasMarkedTodayAttendance: true, showSlider: false});
+    } else {
+      window.navigator.vibrate([200, 100, 200]);
+      this.setState({open:true, errorMsg: result.msg});
+    }
+    // this.setState({showSlider: false});
   }
 
   checkIfAttendanceMarked = async () => {
     let result =  await API.getAttendance();
-    console.log('checkIfAttendanceMarked :', result);
+    this.setState({loading: false})
     if (result === true) {
       this.setState({hasMarkedTodayAttendance: result, showSlider: false});
     }
+
   }
 
   checkIfValidTimeForWFH = ( ) => {
     let hr =  new Date().getHours();
     let min = new Date().getMinutes();
-    if (hr <= 10 && min <= 30) {
+    if (hr <= 10) {
+      this.setState({wfhDisabled: false});
+    } 
+    else if (hr === 10  &&  min <= 30) {
       this.setState({wfhDisabled: false});
     }
   }
@@ -108,7 +111,7 @@ class Home extends Component {
       (position) => {
         let lat = position.coords.latitude
         let lng = position.coords.longitude
-        console.log("getCurrentPosition Success " + lat + lng) // logs position correctly
+        // console.log("getCurrentPosition Success " + lat + lng) // logs position correctly
         this.setState({
           geoLocation: {
             lat: lat,
@@ -118,12 +121,12 @@ class Home extends Component {
       },
       (error) => {
         //  this.props.displayError("Error dectecting your geoLocation");
-        console.error(JSON.stringify(error))
+        // console.error(JSON.stringify(error))
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
       ) 
       let user = Cookie.getCookie('user');
-      console.log(' User in did  mouht :', user);
+      // console.log(' User in did  mouht :', user);
       this.setState({user});
       let date=new Date().toLocaleDateString('en-US', {day: 'numeric'})
       this.setState({currentDate:date});
@@ -136,7 +139,7 @@ class Home extends Component {
       this.setState({currentDay:day});
       let userFound = await API.postUser({email:user.email});
       this.checkIfAttendanceMarked();
-      console.log('userFound :', userFound);
+      // console.log('userFound :', userFound);
       
     }
 
@@ -167,12 +170,17 @@ class Home extends Component {
       <div><Header/></div>
         <div className="main_class">
           {
-          this.state.redirect ?
+          this.state.loading ?
           (
-            <AttendancePage
-              empName={this.state.user.name}
-            />
-          ):
+            // <AttendancePage
+            //   empName={this.state.user.name}
+            // />
+            <div className="empCard loadingWrapper">
+              <CircularProgress color="secondary" />
+              {/* <LinearProgress color="secondary" /> */}
+            </div>
+          )
+          :
           <div className="empCard">
             <div className="cardHeader">
               <div><img className="dpWrapper" src={this.state.user.imageUrl} alt="displayPicture"/></div>
@@ -182,6 +190,7 @@ class Home extends Component {
                <div className="font_style">{this.state.currentDay}</div>
               </div>
             </div>
+
             <div className="swipeWrapper">
 
                 {
@@ -201,7 +210,10 @@ class Home extends Component {
                           PRESENT
                         </Button>
                   </div>
-                  : null
+                  : 
+                  <div className="responseWrapper">
+                        <span className="responseText">You have marked your attendance for today.</span>
+                  </div>
                 }
                   {
                     this.state.showSlider ? 

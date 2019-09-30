@@ -111,13 +111,15 @@ class Header extends Component{
               </IconButton> */}
                 
                 {/* <img src={require('../../assets/qed_logo.png')} alt="logo" /> */}
+
+
                 {/* <GoogleLogout
                 	clientId="785790539959-ea8fvttmkdin1kg307dlmg4pr1ekdmqg.apps.googleusercontent.com"
                   buttonText="Logout"
                   onLogoutSuccess={this.logout}
                 >
                 </GoogleLogout> */}
-             
+             <h3>QED42</h3>
             </Toolbar>
           </AppBar>
           <Drawer
