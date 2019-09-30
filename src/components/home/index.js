@@ -54,7 +54,16 @@ class Home extends Component {
   }
 
   handleOption = async (option) => {
-    window.navigator.vibrate(100);
+    try {
+      // window.navigator.vibrate(100);
+      try {
+        window.navigator.vibrate(100);
+      } catch(err ) {
+        console.log('vibration error :', err);
+      }
+    } catch(err ) {
+      console.log('vibration error :', err);
+    }
     // window.navigator.vibrate([200, 100, 200]);
     this.setState({selectedOption: option});
 
@@ -75,11 +84,19 @@ class Home extends Component {
     let user_id = Cookie.getCookie('user')._id;
     let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
     if (result.success ) {
-      window.navigator.vibrate(100);
+      try {
+        window.navigator.vibrate(100);
+      } catch(err ) {
+        console.log('vibration error :', err);
+      }
       this.setState({showSlider: false});
       this.setState({open:true, errorMsg: result.msg, hasMarkedTodayAttendance: true, showSlider: false});
     } else {
-      window.navigator.vibrate([200, 100, 200]);
+      try {
+        window.navigator.vibrate([200, 100, 200]);
+      } catch(err ) {
+        console.log('vibration error :', err);
+      }
       this.setState({open:true, errorMsg: result.msg});
     }
     // this.setState({showSlider: false});
