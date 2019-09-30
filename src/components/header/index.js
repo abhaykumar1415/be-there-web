@@ -5,19 +5,11 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+
 import ListItem from '@material-ui/core/ListItem';
-// import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-// import InboxIcon from '@material-ui/icons/MoveToInbox';
-// import MailIcon from '@material-ui/icons/Mail';
 import clsx from 'clsx';
-// import EmployeePage from '../employeePage';
+// import GoogleLogout from 'react-google-login';
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -105,10 +97,10 @@ class Header extends Component{
             className={clsx(classes.appBar, {
               [classes.appBarShift]: this.state.open,
             })}
-            style={{backgroundColor:"#DD0130"}}
+            style={{backgroundColor:"teal"}}
           >
-            <Toolbar>
-              <IconButton
+            <Toolbar className="logo">
+              {/* <IconButton
                 color="inherit"
                 aria-label="open drawer"
                 onClick={this.handleDrawerOpen}
@@ -116,10 +108,16 @@ class Header extends Component{
                 className={clsx(classes.menuButton, this.state.open && classes.hide)}
               >
                 <MenuIcon />
-              </IconButton>
-              <div  className="margin-left">
-                QED42
-              </div>
+              </IconButton> */}
+                
+                <img src={require('../../images/QED42logo.png')} />
+                {/* <GoogleLogout
+                	clientId="785790539959-ea8fvttmkdin1kg307dlmg4pr1ekdmqg.apps.googleusercontent.com"
+                  buttonText="Logout"
+                  onLogoutSuccess={this.logout}
+                >
+                </GoogleLogout> */}
+             
             </Toolbar>
           </AppBar>
           <Drawer
