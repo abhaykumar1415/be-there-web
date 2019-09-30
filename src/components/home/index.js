@@ -1,24 +1,23 @@
 
 import React, { useState, useRef, useEffect, Component } from 'react';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
-import Grow from '@material-ui/core/Grow';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+
 import AttendancePage from '../attendancePage/index'
 // import  GoogleLogout from 'react-google-login';
 import Header from '../header/index';
 import Cookie from '../../services/cookie';
 import API from '../../services/api';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
+import ReactSwipe from 'react-swipe';
+import Hammer from 'hammerjs';
+// import './slider.css';
+// import './slider.js';
 
-const options = ['PRESENT','WFH'];
+
+import { SwipeableList, SwipeableListItem } from '@sandstreamdev/react-swipeable-list';
+import '@sandstreamdev/react-swipeable-list/dist/styles.css';
+
+
+
 
 class Home extends Component {
   constructor(props) {
@@ -29,29 +28,17 @@ class Home extends Component {
       redirect:false,
       anchorRef:null,
       currentDate:'',
+      currentDay:'',
+      currentMonth:'',
+      currentYear:'',
       selectedOption: 'PRESENT',
       user: {},
       geoLocation: {
         lat: 0,
         lng: 0
       },
+      showSlider: true
     }
-  }
-
-  handleClick = () => {
-    // alert(`You clicked ${options[this.state.selectedIndex]}`);
-  }
-
-  handleToggle = () => {
-    this.setState({open:true});   
-  }
-    
-  handleMenuItemClick = (event, index) => {
-    console.log('Submit called :', index);
-    this.setState({selectedOption: options[index]});
-    console.log('option :', options[index]);
-    this.setState({open:!this.state.open});
-    this.setState({selectedIndex:index});
   }
 
   handleClose = (event) => {
@@ -68,11 +55,16 @@ class Home extends Component {
     console.log(' User in handle submit :', user_id);
     let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
     console.log(" attendance submit result :", result);
-    // this.setState({redirect:true});
+    
+  }
 
+  handleSwipe(){
+    console.log('swipe')
+    this.setState({showSlider: false});
   }
 
   async componentDidMount () {
+    // this.sliderJs();
     navigator.geolocation.getCurrentPosition (
       (position) => {
         let lat = position.coords.latitude
@@ -90,24 +82,29 @@ class Home extends Component {
         console.error(JSON.stringify(error))
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-    ) 
-    let user = Cookie.getCookie('user');
-    console.log(' User in did  mouht :', user);
-    this.setState({user});
-    let date=new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
-    this.setState({currentDate:date});
-    let userFound = await API.postUser({email:user.email});
-    console.log('userFound :', userFound);
-    
-    }   
+      ) 
+      let user = Cookie.getCookie('user');
+      console.log(' User in did  mouht :', user);
+      this.setState({user});
+      let date=new Date().toLocaleDateString('en-US', {day: 'numeric'})
+      this.setState({currentDate:date});
+      let month=new Date().toLocaleDateString('en-US', {month: 'long'})
+      this.setState({currentMonth:month});
+      let year=new Date().toLocaleDateString('en-US', {year: 'numeric'})
+      this.setState({currentYear:year});
+      let day= new Date().toLocaleDateString('en-US', {weekday:'long'});
+      this.setState({currentDay:day});
+      let userFound = await API.postUser({email:user.email});
+      console.log('userFound :', userFound);
+      
+    }
 
-    
   render () {
     
   return(
     <div className="wrapper_content">
       <div><Header/></div>
-        <div  className="main_class">
+        <div className="main_class">
           {
           this.state.redirect ?
           (
@@ -115,75 +112,50 @@ class Home extends Component {
               empName={this.state.user.name}
             />
           ):
-          <div className="attendanceCard" style={{ borderRadius: '40px',marginTop:'30%'}}>
-            <CardContent className="EmpPageWrapper">
-              <div className="text-align cardHeader">
-               {this.state.user.name}
+          <div className="empCard">
+            <div className="cardHeader">
+              <div><img src={this.state.user.imageUrl}/></div>
+              <div className="empInfo">
+               <div className="font_style ">{this.state.user.name}</div>
+               <div className="font_style ">{this.state.currentDate},{this.state.currentMonth},{this.state.currentYear}</div>
+               <div className="font_style">{this.state.currentDay}</div>
               </div>
-            <div className="text-align margin_bottom-40 font_style ">{this.state.currentDate}</div>
-            <CardActions className="button_wrapper ">
-              <ButtonGroup
-                variant="contained"
-                style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '12px'}}
-                ref={this.state.anchorRef}
-                aria-label="split button"
-                className="margin-right">
-                  <Button  
-                    style={{
-                      backgroundColor:'#EB1F4A',
-                      color:'#FFFFFF',
-                      borderTopLeftRadius: '12px',
-                      borderBottomLeftRadius: '12px'
-                      }}
-                      onClick={this.handleClick}>{options[this.state.selectedIndex]}
-                  </Button>
-                  <Button
-                      style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '12px'}}
-                      size="small"
-                      aria-owns={this.state.open ? 'menu-list-grow' : undefined}
-                      aria-haspopup="true"
-                      onClick={this.handleToggle}
-                  >
-                    <ArrowDropDownIcon />
-                  </Button>
-              </ButtonGroup>
-              <Popper open={this.state.open} anchorEl={this.state.anchorRef} transition disablePortal>
-                {({ TransitionProps, placement }) => (
-                  <Grow
-                  {...TransitionProps}
-                  style={{
-                      transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
+            </div>
+          <div className="EmpPageWrapper" >
+           
+            <Button variant="contained"
+              style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '5px',padding:'16px 50px'}}
+              onClick={this.handleSubmit}
+              className="margin-left">
+              WFH
+            </Button>
+            <Button variant="contained"
+              style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '5px',padding:'16px 35px'}}
+              onClick={this.handleSubmit}
+              className="margin-left">
+              PRESENT
+            </Button>
+            </div>
+            <div className="swipeWrapper">
+            {
+              this.state.showSlider ? 
+                <SwipeableList>
+                <SwipeableListItem
+                  swipeRight={{
+                    content: <div></div>,
+                    action: () => this.handleSwipe()
                   }}
-                  >
-                  <Paper id="menu-list-grow" >
-                    <ClickAwayListener onClickAway={this.handleClose}>
-                      <MenuList>
-                        { options.map((option, index) => (
-                          <MenuItem
-                            key={option}
-                            disabled={index === 2}
-                            selected={index === this.state.selectedIndex}
-                            onClick={event => this.handleMenuItemClick(event, index)}
-                          >
-                            {option}
-                          </MenuItem>
-                      ))}
-                     </MenuList>
-                    </ClickAwayListener>
-                  </Paper>
-                  </Grow>
-                )}
-              </Popper>
-              <Button
-                variant="contained"
-                style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '12px'}}
-                onClick={this.handleSubmit}
-                className="margin-left">
-                  Submit
-              </Button>
-            </CardActions>
-            </CardContent>
+                >
+                  <div >
+                    Swipe to submit
+                  </div>
+                </SwipeableListItem>
+              </SwipeableList>
+              : null
+            }
+            </div>
           </div>
+           
         }
         </div>
     </div>

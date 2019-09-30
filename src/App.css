@@ -1,14 +1,16 @@
 .wrapper{
   display: flex;
   justify-content: center;
+  height: 102vh;
 }
 
 .main_class{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url(assets/image.png);
-  height: 100vh;
+  /* background: url(assets/image.png); */
+  height: 102vh;
+  width: 57vh;
 }
 .text-align{
   text-align: center;
@@ -20,7 +22,7 @@
 
 .button_wrapper{
   display: flex;
-  margin-bottom: 10%;
+  /* margin-bottom: 10%; */
 }
 
 .margin_bottom-30{
@@ -41,8 +43,8 @@
 
 .EmpPageWrapper{
   display: flex;
-  flex-direction: column;
-  /* margin: 8% 0%; */
+  justify-content: space-evenly;
+  
 }
 
 .attendanceCard{
@@ -50,8 +52,10 @@
  
 }
 
-.margin-top{
-  margin-top: 20%;
+.loginScreen{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 
 .margin-right{
@@ -64,15 +68,15 @@
 }
 
 .cardHeader{
-  font-size: 30px;
-  border-bottom: 1px solid gray;
-  padding-bottom: 15px;
-  margin-bottom: 10%;
-  
+  display: flex;
+  height: 30vh;
+  margin-top: 50px;
+  width: 53vh;
+  justify-content: space-evenly;
 }
 
 .font_style{
-  font-size: 30px;
+  font-size: 22px;
   font-family: sans-serif;
 }
 
@@ -82,4 +86,25 @@
 
 .bg_color{
   background-color: #DD0130;
+}
+
+.logo{
+  display: flex;
+  justify-content: center;
+}
+
+.empInfo{
+  display: flex;
+  flex-direction: column
+}
+
+.empCard{
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+}
+
+.swipeWrapper{
+  margin-top: 50%;
+    font-size: 40px;
 }
