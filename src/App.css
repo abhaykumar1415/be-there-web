@@ -1,3 +1,7 @@
+body {
+  background-color: #0e3745;
+}
+
 .wrapper{
   display: flex;
   justify-content: center;
@@ -41,11 +45,7 @@
   margin-top: 15%;  
 }
 
-.EmpPageWrapper{
-  display: flex;
-  justify-content: space-evenly;
-  
-}
+
 
 .attendanceCard{
   background-color: whitesmoke;
@@ -67,18 +67,6 @@
   font-size: x-large;
 }
 
-.cardHeader{
-  display: flex;
-  height: 30vh;
-  margin-top: 50px;
-  width: 53vh;
-  justify-content: space-evenly;
-}
-
-.font_style{
-  font-size: 22px;
-  font-family: sans-serif;
-}
 
 .color{
   color: cornflowerblue;
@@ -93,18 +81,6 @@
   justify-content: center;
 }
 
-.empInfo{
-  display: flex;
-  flex-direction: column
-}
 
-.empCard{
-  display: flex;
-  flex-direction: column;
-  height: 80vh;
-}
 
-.swipeWrapper{
-  margin-top: 50%;
-    font-size: 40px;
-}
+

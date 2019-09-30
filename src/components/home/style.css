@@ -1,0 +1,108 @@
+.dpWrapper {
+  /* border-radius: 5px; */
+  border-radius: 50%;
+  height: 100px;
+  border: 3px solid #90CAF9;
+  box-shadow: 0px 0px 2vw #B2EBF2;
+}
+.empInfo{
+  display: flex;
+  flex-direction: column;
+  height: 100px;
+  justify-content: space-evenly;
+}
+
+.font_style{
+  font-size: 22px;
+  font-family: monospace;
+  color: white;
+}
+
+
+.cardHeader{
+  display: flex;
+  height: 30vh;
+  margin-top: 100px;
+  /* width: 53vh; */
+  justify-content: space-evenly;
+  align-items: center;
+  /* margin: 0 10px 0 10px; */
+  margin-left: 20px;
+  margin-right: 20px;
+  border: 1px solid #E0E0E0;
+  border-radius: 5px;
+  /* background-image: url('../../assets/bg5.png'); */
+}
+
+.empCard{
+  display: flex;
+  flex-direction: column;
+  height: 102vh;
+  justify-content: space-around;
+  width: 100%;
+  background-color: #0e3745;
+}
+
+.EmpPageWrapper{
+  display: flex;
+  justify-content: space-evenly;
+  padding-top: 100px;
+}
+
+.swipeWrapper{
+  /* margin-top: 50%; */
+    font-size: 40px;
+    /* margin-top: 50%; */
+    font-size: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.ctaWrapper {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-bottom: 10%;
+}
+.swipeElementWrapper {
+  color: green;
+  width: 90%;
+  padding-left: 5%;
+  border: 1px solid black;
+  padding-right: 5%;
+  border-radius: 5px;
+  background: #ffc008
+}
+
+.swipeElement {
+  width: 100%;
+  font-size: small;
+  display: flex;
+  align-items: center;
+  height: 50px;
+  align-items: center;
+  background: #ffc008
+}
+
+.swipeElementText {
+  background: #ffc008;
+  border-radius: 52px;
+  font-size: x-large;
+  width: 33px;
+  color: #dd5201;
+  background: #ffc008;
+}
+
+
+/* box-shadow: 0px 0px 2vw; */
+
+
+.circle {
+  width: 30px;
+}
+
+.SwipeableListItem_swipeableListItem__3Tgya {
+  background: #ffc008;
+}

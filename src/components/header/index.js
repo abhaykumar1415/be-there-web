@@ -97,7 +97,7 @@ class Header extends Component{
             className={clsx(classes.appBar, {
               [classes.appBarShift]: this.state.open,
             })}
-            style={{backgroundColor:"teal"}}
+            style={{backgroundColor:"#be2622"}}
           >
             <Toolbar className="logo">
               {/* <IconButton
@@ -110,7 +110,7 @@ class Header extends Component{
                 <MenuIcon />
               </IconButton> */}
                 
-                <img src={require('../../images/QED42logo.png')} />
+                {/* <img src={require('../../assets/qed_logo.png')} alt="logo" /> */}
                 {/* <GoogleLogout
                 	clientId="785790539959-ea8fvttmkdin1kg307dlmg4pr1ekdmqg.apps.googleusercontent.com"
                   buttonText="Logout"

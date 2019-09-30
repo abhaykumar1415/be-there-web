@@ -9,12 +9,13 @@ import Cookie from '../../services/cookie';
 import API from '../../services/api';
 import ReactSwipe from 'react-swipe';
 import Hammer from 'hammerjs';
-// import './slider.css';
-// import './slider.js';
+import './style.css';
+import Snackbar from '@material-ui/core/Snackbar';
 
 
 import { SwipeableList, SwipeableListItem } from '@sandstreamdev/react-swipeable-list';
 import '@sandstreamdev/react-swipeable-list/dist/styles.css';
+import { async } from 'q';
 
 
 
@@ -37,7 +38,9 @@ class Home extends Component {
         lat: 0,
         lng: 0
       },
-      showSlider: true
+      showSlider: true,
+      hasMarkedTodayAttendance: false,
+      errorMsg: '',
     }
   }
 
@@ -55,12 +58,26 @@ class Home extends Component {
     console.log(' User in handle submit :', user_id);
     let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
     console.log(" attendance submit result :", result);
+    if (result.success ) {
+
+    } else {
+      window.navigator.vibrate([200, 100, 200]);
+      this.setState({open:true, errorMsg: result.msg});
+    }
     
   }
 
   handleSwipe(){
     console.log('swipe')
     this.setState({showSlider: false});
+  }
+
+  checkIfAttendanceMarked = async () => {
+    let result =  await API.getAttendance();
+    console.log('checkIfAttendanceMarked :', result);
+    if (result === true) {
+      this.setState({hasMarkedTodayAttendance: result, showSlider: false});
+    }
   }
 
   async componentDidMount () {
@@ -88,13 +105,15 @@ class Home extends Component {
       this.setState({user});
       let date=new Date().toLocaleDateString('en-US', {day: 'numeric'})
       this.setState({currentDate:date});
-      let month=new Date().toLocaleDateString('en-US', {month: 'long'})
+      let month=new Date().toLocaleDateString('en-US', {month: 'short'})
+      // new Date().toLocaleDateString('en-US', { month: 'short',timeZone: 'UTC' })
       this.setState({currentMonth:month});
       let year=new Date().toLocaleDateString('en-US', {year: 'numeric'})
       this.setState({currentYear:year});
       let day= new Date().toLocaleDateString('en-US', {weekday:'long'});
       this.setState({currentDay:day});
       let userFound = await API.postUser({email:user.email});
+      this.checkIfAttendanceMarked();
       console.log('userFound :', userFound);
       
     }
@@ -114,50 +133,65 @@ class Home extends Component {
           ):
           <div className="empCard">
             <div className="cardHeader">
-              <div><img src={this.state.user.imageUrl}/></div>
+              <div><img className="dpWrapper" src={this.state.user.imageUrl} alt="displayPicture"/></div>
               <div className="empInfo">
                <div className="font_style ">{this.state.user.name}</div>
-               <div className="font_style ">{this.state.currentDate},{this.state.currentMonth},{this.state.currentYear}</div>
+               <div className="font_style ">{this.state.currentDate} {this.state.currentMonth},{this.state.currentYear}</div>
                <div className="font_style">{this.state.currentDay}</div>
               </div>
             </div>
-          <div className="EmpPageWrapper" >
-           
-            <Button variant="contained"
-              style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '5px',padding:'16px 50px'}}
-              onClick={this.handleSubmit}
-              className="margin-left">
-              WFH
-            </Button>
-            <Button variant="contained"
-              style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '5px',padding:'16px 35px'}}
-              onClick={this.handleSubmit}
-              className="margin-left">
-              PRESENT
-            </Button>
-            </div>
             <div className="swipeWrapper">
-            {
-              this.state.showSlider ? 
-                <SwipeableList>
-                <SwipeableListItem
-                  swipeRight={{
-                    content: <div></div>,
-                    action: () => this.handleSwipe()
-                  }}
-                >
-                  <div >
-                    Swipe to submit
+
+                {
+                  !this.state.hasMarkedTodayAttendance ? 
+                  <div className="ctaWrapper">
+                        <Button variant="contained"
+                          style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '5px',padding:'16px 50px'}}
+                          onClick={this.handleSubmit}
+                          className="margin-left">
+                          WFH
+                        </Button>
+                        <Button variant="contained"
+                          style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '5px',padding:'16px 35px'}}
+                          onClick={this.handleSubmit}
+                          className="margin-left">
+                          PRESENT
+                        </Button>
                   </div>
-                </SwipeableListItem>
-              </SwipeableList>
-              : null
-            }
-            </div>
-          </div>
-           
+                  : null
+                }
+                  {
+                    this.state.showSlider ? 
+                    <div className="swipeElementWrapper">
+                        <SwipeableList>
+                          <SwipeableListItem
+                            swipeRight={{
+                              content: <div></div>,
+                              action: () => this.handleSwipe()
+                            }}
+                          >
+                            <div className="swipeElement">
+                              {/* <div classNam="swipeElementText">O</div> */}
+                              <img src={ require ("../../assets/redDot.png")} className="circle" alt="circle"/>
+                            </div>
+                          </SwipeableListItem>
+                        </SwipeableList>
+                    </div>
+                    : null
+                  }
+            </div> {/* swipeWrapper*/}
+          </div> /* empCard */
         }
-        </div>
+        </div>  {/* main class */}
+        <Snackbar
+						anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+						open={this.state.open}
+						onClose={() => this.handleClose ()}
+						ContentProps={{
+						'aria-describedby': 'message-id',
+						}}
+						message={<span id="message-id">{this.state.errorMsg}</span>}
+				/>
     </div>
     )
   }

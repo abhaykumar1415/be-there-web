@@ -7,7 +7,7 @@ const axios = require('axios');
 const postAttendance = (_id, payload) => {
   const url = URL.BASE_URL + URL.USERS + _id;
   console.log('URL :', url);
-  axios.put(url, payload)
+  return axios.put(url, payload)
   .then(function (response) {
     console.log("Markig attendance :",response);
     return response.data;
@@ -17,12 +17,15 @@ const postAttendance = (_id, payload) => {
   });
 }
 
-const getAttendance = (_id) => {
-  const url = URL.BASE_URL + URL.USERS + _id;
+const getAttendance = () => {
+  let _id = Cookie.getCookie('user')._id;
+  console.log('getAttendance  _id :', _id);
+  const url = URL.BASE_URL + URL.USERS  + URL.ME_TODAY + _id;
   console.log('URL :', url);
-  axios.get(url)
+  return axios.get(url)
     .then(function (response) {
       console.log("Get Attendance :",response);
+      return response.data.attendanceMarked;
     })
     .catch(function (error) {
       console.log(error);
