@@ -106,3 +106,20 @@
 .SwipeableListItem_swipeableListItem__3Tgya {
   background: #ffc008;
 }
+
+.buttonDisabled {
+  background-color: rgba(235, 31, 74, 0.47) !important;
+  color: #FFFFFF !important;
+  border-radius: '5px' !important;
+  padding: 16px 50px !important;
+}
+.buttonEnabled {
+  background-color: rgb(235, 31, 74) !important;
+  color:#FFFFFF !important;
+  border-radius: '5px' !important;
+  padding: 16px 50px !important;
+}
+
+.selected {
+  box-shadow: 0px 0px 3vw #fff !important;
+}

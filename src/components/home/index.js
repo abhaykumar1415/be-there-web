@@ -41,6 +41,7 @@ class Home extends Component {
       showSlider: true,
       hasMarkedTodayAttendance: false,
       errorMsg: '',
+      wfhDisabled: true,
     }
   }
 
@@ -51,24 +52,37 @@ class Home extends Component {
     this.setState({open:false})
   }
 
-  handleSubmit = async () => {
+  handleOption = async (option) => {
     console.log(' In submit button');
     console.log(' this.state.user in  :', this.state.user._id);
-    let user_id = Cookie.getCookie('user')._id;
-    console.log(' User in handle submit :', user_id);
-    let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
-    console.log(" attendance submit result :", result);
-    if (result.success ) {
+    window.navigator.vibrate([200, 100, 200]);
+    this.setState({selectedOption: option});
 
-    } else {
-      window.navigator.vibrate([200, 100, 200]);
-      this.setState({open:true, errorMsg: result.msg});
-    }
+    // let user_id = Cookie.getCookie('user')._id;
+    // console.log(' User in handle submit :', user_id);
+    // let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
+    // console.log(" attendance submit result :", result);
+    // if (result.success ) {
+
+    // } else {
+    //   window.navigator.vibrate([200, 100, 200]);
+    //   this.setState({open:true, errorMsg: result.msg});
+    // }
     
   }
 
   handleSwipe(){
     console.log('swipe')
+     // let user_id = Cookie.getCookie('user')._id;
+    // console.log(' User in handle submit :', user_id);
+    // let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
+    // console.log(" attendance submit result :", result);
+    // if (result.success ) {
+
+    // } else {
+    //   window.navigator.vibrate([200, 100, 200]);
+    //   this.setState({open:true, errorMsg: result.msg});
+    // }
     this.setState({showSlider: false});
   }
 
@@ -80,8 +94,16 @@ class Home extends Component {
     }
   }
 
+  checkIfValidTimeForWFH = ( ) => {
+    let hr =  new Date().getHours();
+    let min = new Date().getMinutes();
+    if (hr <= 10 && min <= 30) {
+      this.setState({wfhDisabled: false});
+    }
+  }
   async componentDidMount () {
     // this.sliderJs();
+    this.checkIfValidTimeForWFH()
     navigator.geolocation.getCurrentPosition (
       (position) => {
         let lat = position.coords.latitude
@@ -118,6 +140,26 @@ class Home extends Component {
       
     }
 
+    getWFHClass = () => {
+        if (this.state.wfhDisabled) {
+          return "buttonDisabled";
+        }
+        else {
+          if (this.state.selectedOption === "WFH") {
+            return "buttonEnabled selected";
+          } else {
+            return "buttonEnabled";
+          }
+      } 
+    }
+    getPresentClass = () => {
+        if (this.state.selectedOption === "PRESENT") {
+          return "buttonEnabled selected";
+        } else {
+          return "buttonEnabled";
+        }
+    }
+
   render () {
     
   return(
@@ -146,15 +188,16 @@ class Home extends Component {
                   !this.state.hasMarkedTodayAttendance ? 
                   <div className="ctaWrapper">
                         <Button variant="contained"
-                          style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '5px',padding:'16px 50px'}}
-                          onClick={this.handleSubmit}
-                          className="margin-left">
+                          className={this.getWFHClass()}
+                          onClick={() => this.handleOption('WFH')}
+                          disabled={this.state.wfhDisabled}
+                          >
                           WFH
                         </Button>
                         <Button variant="contained"
-                          style={{backgroundColor:'#EB1F4A',color:'#FFFFFF',borderRadius: '5px',padding:'16px 35px'}}
-                          onClick={this.handleSubmit}
-                          className="margin-left">
+                          className={this.getPresentClass()}
+                          onClick={() =>  this.handleOption('PRESENT')}
+                          >
                           PRESENT
                         </Button>
                   </div>
