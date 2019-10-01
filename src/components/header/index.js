@@ -122,7 +122,7 @@ class Header extends Component{
              <h3>QED42</h3>
             </Toolbar>
           </AppBar>
-          <Drawer
+          {/* <Drawer
             className={classes.drawer}
             anchor="left"
             open={this.state.open}
@@ -138,13 +138,13 @@ class Header extends Component{
                 </ListItem>
               ))}
             </List>
-          </Drawer>
-          <main
+          </Drawer> */}
+          {/* <main
             className={clsx(classes.content, {
               [classes.contentShift]: this.state.open,
             })}
           >
-          </main>
+          </main> */}
         </div>
         )
     }

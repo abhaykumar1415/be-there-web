@@ -1,23 +1,15 @@
 
 import React, { useState, useRef, useEffect, Component } from 'react';
 import Button from '@material-ui/core/Button';
-
-import AttendancePage from '../attendancePage/index'
-// import  GoogleLogout from 'react-google-login';
 import Header from '../header/index';
 import Cookie from '../../services/cookie';
 import API from '../../services/api';
-import ReactSwipe from 'react-swipe';
-import Hammer from 'hammerjs';
 import './style.css';
 import Snackbar from '@material-ui/core/Snackbar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { SwipeableList, SwipeableListItem } from '@sandstreamdev/react-swipeable-list';
 import '@sandstreamdev/react-swipeable-list/dist/styles.css';
-import { async } from 'q';
-
-
 
 
 class Home extends Component {
@@ -42,7 +34,10 @@ class Home extends Component {
       hasMarkedTodayAttendance: false,
       errorMsg: '',
       wfhDisabled: true,
-      loading: true
+      loading: true,
+      location:null,
+      errorMessage:null,
+      position:null,
     }
   }
 
@@ -121,34 +116,58 @@ class Home extends Component {
       this.setState({wfhDisabled: false});
     }
   }
+
+  // showPosition = () => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //         showPosition, 
+  //         null, 
+  //         {
+  //            enableHighAccuracy: true,
+  //            timeout: 5000,
+  //            maximumAge: 0
+  //         });
+  // } else { 
+  //    console.log("error")
+  // }
+  // }
+
   async componentDidMount () {
+    
     // this.sliderJs();
     this.checkIfValidTimeForWFH()
-    navigator.geolocation.getCurrentPosition (
-      (position) => {
-        let lat = position.coords.latitude
-        let lng = position.coords.longitude
-        // console.log("getCurrentPosition Success " + lat + lng) // logs position correctly
-        this.setState({
-          geoLocation: {
-            lat: lat,
-            lng: lng
-          }
-        })
-      },
-      (error) => {
-        //  this.props.displayError("Error dectecting your geoLocation");
-        // console.error(JSON.stringify(error))
-      },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-      ) 
+    
+    // navigator.geolocation.getCurrentPosition (
+		// 	(position) => {
+    //     console.log("pos:",position)
+		// 	  // try{
+		// 		let lat = position.coords.latitude
+		// 		let lng = position.coords.longitude
+		// 		console.log("getCurrentPosition Success " + lat + lng) // logs position correctly
+		// 		this.setState({
+		// 		  geoLocation: {
+		// 			lat: lat,
+		// 			lng: lng
+		// 		  }
+		// 		})
+		// 	  // }catch(error){
+		// 		// console.log("error in catch",error);
+		// 	  // }
+			  
+		// 	},
+		// 	(error) => {
+		// 		//this.props.displayError("Error dectecting your geoLocation");
+		// 	  // console.error(JSON.stringify(error))
+    //    console.log("err:",error);
+		// 	},
+		// 	{enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
+		// 	) 
+    
       let user = Cookie.getCookie('user');
-      // console.log(' User in did  mouht :', user);
       this.setState({user});
       let date=new Date().toLocaleDateString('en-US', {day: 'numeric'})
       this.setState({currentDate:date});
       let month=new Date().toLocaleDateString('en-US', {month: 'short'})
-      // new Date().toLocaleDateString('en-US', { month: 'short',timeZone: 'UTC' })
       this.setState({currentMonth:month});
       let year=new Date().toLocaleDateString('en-US', {year: 'numeric'})
       this.setState({currentYear:year});
@@ -156,8 +175,6 @@ class Home extends Component {
       this.setState({currentDay:day});
       let userFound = await API.postUser({email:user.email});
       this.checkIfAttendanceMarked();
-      // console.log('userFound :', userFound);
-      
     }
 
     getWFHClass = () => {
@@ -180,11 +197,12 @@ class Home extends Component {
         }
     }
 
-  render () {
     
+  render () {
+   
   return(
     <div className="wrapper_content">
-      <div><Header/></div>
+      <div><Header /></div>
         <div className="main_class">
           {
           this.state.loading ?
@@ -264,6 +282,7 @@ class Home extends Component {
 						}}
 						message={<span id="message-id">{this.state.errorMsg}</span>}
 				/>
+        
     </div>
     )
   }
