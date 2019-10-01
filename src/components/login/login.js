@@ -28,14 +28,9 @@ class Login extends Component {
 		if (reason === 'clickaway') {
 		  return;
 		}
-	
 		this.setState({open:false});
 	  };
 	  
-	timeValidation=()=>{
-		// const hour = new Date().getHours();
-		// const minutes=new 
-	}
 	
 	responseGoogle = (response) => {
 		console.log('google RES :', response);
@@ -55,13 +50,58 @@ class Login extends Component {
 		}
 	}
 
+
+	componentDidMount = () => {
+		
+		navigator.geolocation.getCurrentPosition (
+			(position) => {
+				console.log('pos : ', position)
+				if(position=== null){
+					console.log("error")
+				}
+		
+				let lat = position.coords.latitude
+				let lng = position.coords.longitude
+				console.log("getCurrentPosition Success " + lat + lng) // logs position correctly
+				this.setState({
+				  geoLocation: {
+					lat: lat,
+					lng: lng
+				  }
+				})
+
+			},
+			(error) => {
+				//this.props.displayError("Error dectecting your geoLocation");
+			  	// console.error(JSON.stringify(error))
+			  console.log("err:",error);
+				alert("You Denied Application Permissions");
+				switch(error) {
+					case error.PERMISSION_DENIED:
+						alert(" You Denied Application Permissions");
+						break;
+					case error.POSITION_UNAVAILABLE:
+						alert("POSITION_UNAVAILABLE");
+						break;
+					case error.TIMEOUT:
+						alert("TIMEOUT");
+						break;
+					case error.UNKNOWN_ERROR:
+						alert("UNKNOWN_ERROR");
+						break;
+				}
+			},
+			{enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
+			) 
+	}
+
 render() {
 
 	return (
 		<Router>
 			{
 				this.state.redirect ? (
-					<Home/>
+					<Home />
 				) :
 				(
 				<div className="loginScreen">
