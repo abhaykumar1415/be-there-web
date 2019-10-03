@@ -1,7 +1,8 @@
 import cookie from 'react-cookies'
 
 const setCookie = (payload) => {
-  cookie.save(payload.title, payload.data, { path: '/' })
+  const expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365);
+  cookie.save(payload.title, payload.data, { path: '/', expires })
 }
 
 const getCookie = (payload) => {
