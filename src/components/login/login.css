@@ -1,3 +1,15 @@
+@font-face {
+  font-family: 'Circular-Air-Book';
+  src: url('../../assets/Circular-Air-Book.ttf');
+}
+
+@font-face {
+  font-family: 'Circular-Air-Light';
+  src: url('../../assets/Circular-Air-Light.ttf');
+}
+
+
+
 .googleLogin{
     display: flex;
     justify-content:'center';
@@ -5,4 +17,62 @@
 .googleBtn {
   background-color: transparent;
   border: none;
+  padding: 0px !important;
+  margin-left: 10%;
+  background: #4286f5 !important;
+  color: white !important;
+}
+
+.mainImage {
+  width: 80%;
+}
+
+.wrapper{
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+}
+
+.mainImage-wrapper {
+  justify-content: center;
+  display: flex;
+}
+
+.content-wrapper {
+  margin-left: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;;
+  height: 33%;
+}
+
+.content-wrapper-image-logo {
+  height: 25px;
+}
+
+.content-wrapper-text-wrapper-1 {
+  font-family: Circular-Air-Book;
+  color: rgb(143, 143, 143);
+  font-size: 15px;
+}
+
+.content-wrapper-text-wrapper-2 {
+  display: flex;
+  flex-direction: column;
+  height: 100px;
+  font-family: Circular-Air-Light;
+  font-size: 25px;
+  color: #161A1F;
+}
+
+.content-wrapper-text-wrapper-3 {
+  
+}
+
+.content-wrapper-text-wrapper-4 {
+  
+}
+
+.content-wrapper-text-wrapper-5 {
+  
 }

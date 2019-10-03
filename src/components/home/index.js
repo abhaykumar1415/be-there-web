@@ -1,17 +1,19 @@
 
-import React, { useState, useRef, useEffect, Component } from 'react';
+import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import Header from '../header/index';
-import Cookie from '../../services/cookie';
+import Data from '../../services/data';
 import API from '../../services/api';
 import './style.css';
 import Snackbar from '@material-ui/core/Snackbar';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import { SwipeableList, SwipeableListItem } from '@sandstreamdev/react-swipeable-list';
 import '@sandstreamdev/react-swipeable-list/dist/styles.css';
 import PopUp from '../popup';
-
+import Radio from '@material-ui/core/Radio';
+import Pulse from 'react-reveal/Pulse';
+import Fade from 'react-reveal/Fade';
+import Bounce from 'react-reveal/Bounce';
 
 
 class Home extends Component {
@@ -26,7 +28,7 @@ class Home extends Component {
       currentDay:'',
       currentMonth:'',
       currentYear:'',
-      selectedOption: 'PRESENT',
+      selectedOption: 'present',
       user: {},
       geoLocation: {
         lat: 0,
@@ -66,31 +68,17 @@ class Home extends Component {
     } catch(err ) {
       console.log('vibration error :', err);
     }
-    // window.navigator.vibrate([200, 100, 200]);
     this.setState({selectedOption: option});
-
-    // let user_id = Cookie.getCookie('user')._id;
-    // console.log(' User in handle submit :', user_id);
-    // let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
-    // console.log(" attendance submit result :", result);
-    // if (result.success ) {
-
-    // } else {
-    //   window.navigator.vibrate([200, 100, 200]);
-    //   this.setState({open:true, errorMsg: result.msg});
-    // }
-    
   }
 
   handleSwipe = async () => {
-    let user_id = Cookie.getCookie('user')._id;
+    let user_id = Data.getData('user')._id;
     await this.getGeoLocation();
     let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
     if (result.success ) {
       try {
         window.navigator.vibrate(100);
       } catch(err ) {
-        console.log('vibration error :', err);
       }
       this.setState({showSlider: false});
       this.setState({open:true, errorMsg: result.msg, hasMarkedTodayAttendance: true, showSlider: false});
@@ -98,11 +86,9 @@ class Home extends Component {
       try {
         window.navigator.vibrate([200, 100, 200]);
       } catch(err ) {
-        console.log('vibration error :', err);
       }
       this.setState({open:true, errorMsg: result.msg});
     }
-    // this.setState({showSlider: false});
   }
 
   checkIfAttendanceMarked = async () => {
@@ -129,7 +115,6 @@ class Home extends Component {
         })
       },
       (error) => {
-        //  this.props.displayError("Error dectecting your geoLocation");
         this.setState({locationPermission: false});
         console.error("geolocation error :",error);
       },
@@ -149,41 +134,21 @@ class Home extends Component {
   }
 
   async componentDidMount () {
-    // this.sliderJs();
     this.checkIfValidTimeForWFH()
     this.getGeoLocation();
-    
-    // navigator.geolocation.getCurrentPosition (
-    //   (position) => {
-    //     let lat = position.coords.latitude
-    //     let lng = position.coords.longitude
-    //     console.log("getCurrentPosition Success " + lat + lng) // logs position correctly
-    //     this.setState({
-    //       geoLocation: {
-    //         lat: lat,
-    //         lng: lng
-    //       }
-    //     })
-    //   },
-    //   (error) => {
-    //     //  this.props.displayError("Error dectecting your geoLocation");
-    //     console.error(JSON.stringify(error))
-    //   },
-    //   {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-    //   ) 
-
-      let user = Cookie.getCookie('user');
-      this.setState({user});
-      let date=new Date().toLocaleDateString('en-US', {day: 'numeric'})
-      this.setState({currentDate:date});
-      let month=new Date().toLocaleDateString('en-US', {month: 'short'})
-      this.setState({currentMonth:month});
-      let year=new Date().toLocaleDateString('en-US', {year: 'numeric'})
-      this.setState({currentYear:year});
-      let day= new Date().toLocaleDateString('en-US', {weekday:'long'});
-      this.setState({currentDay:day});
-      let userFound = await API.postUser({email:user.email});
-      this.checkIfAttendanceMarked();
+    let user = Data.getData('user');
+    let date=new Date().toLocaleDateString('en-US', {day: 'numeric'})
+    let month=new Date().toLocaleDateString('en-US', {month: 'short'})
+    // let year=new Date().toLocaleDateString('en-US', {year: 'numeric'})
+    let day= new Date().toLocaleDateString('en-US', {weekday:'long'});
+    let currentDate = date + ' ' + month;
+    // this.setState({currentDate:date});
+    this.setState({user});
+    this.setState({currentMonth:month});
+    // this.setState({currentYear:year});
+    this.setState({user, currentDay:day, currentDate});
+    await API.postUser({email:user.email});
+    this.checkIfAttendanceMarked();
     }
 
     getWFHClass = () => {
@@ -212,81 +177,86 @@ class Home extends Component {
   return(
     <div className="wrapper_content">
       <div><Header /></div>
-      {
+      {/* {
         !this.state.locationPermission ? 
         <PopUp />
         : null
-      }
-        <div className="main_class">
+      } */}
+        <div className="main_wrapper">
           {
           this.state.loading ?
           (
-            // <AttendancePage
-            //   empName={this.state.user.name}
-            // />
             <div className="empCard loadingWrapper">
               <CircularProgress color="secondary" />
-              {/* <LinearProgress color="secondary" /> */}
             </div>
           )
           :
-          <div className="empCard">
-            <div className="cardHeader">
-              <div><img className="dpWrapper" src={this.state.user.imageUrl} alt="displayPicture"/></div>
-              <div className="empInfo">
-               <div className="font_style ">{this.state.user.name}</div>
-               <div className="font_style ">{this.state.currentDate} {this.state.currentMonth},{this.state.currentYear}</div>
-               <div className="font_style">{this.state.currentDay}</div>
+          <Fade>
+          <div className="content">
+            <div>
+              {/* <Pulse> */}
+                <div className="content-greetings-primary">
+                    welcome, {this.state.user.name}
+                </div>
+              {/* </Pulse> */}
+              <div className="content-greetings-secondray">
+                <div>
+                  Hope you had a great 
+                </div>
+                <div>
+                  sleep, time to start a fresh
+                </div>
+                <div>
+                  day!
+                </div>
+              </div>
+              <div className="line">
+                _______
               </div>
             </div>
-
-            <div className="swipeWrapper">
-
-                {
-                  !this.state.hasMarkedTodayAttendance ? 
-                  <div className="ctaWrapper">
-                        <Button variant="contained"
-                          className={this.getWFHClass()}
-                          onClick={() => this.handleOption('WFH')}
-                          disabled={this.state.wfhDisabled}
-                          >
-                          WFH
-                        </Button>
-                        <Button variant="contained"
-                          className={this.getPresentClass()}
-                          onClick={() =>  this.handleOption('PRESENT')}
-                          >
-                          PRESENT
-                        </Button>
-                  </div>
-                  : 
-                  <div className="responseWrapper">
-                        <span className="responseText">You have marked your attendance for today.</span>
-                  </div>
-                }
-                  {
-                    this.state.showSlider ? 
-                    <div className="swipeElementWrapper">
-                        <SwipeableList>
-                          <SwipeableListItem
-                            swipeRight={{
-                              content: <div></div>,
-                              action: () => this.handleSwipe()
-                            }}
-                          >
-                            <div className="swipeElement">
-                              {/* <div classNam="swipeElementText">O</div> */}
-                              <img src={ require ("../../assets/redDot.png")} className="circle" alt="circle"/>
-                            </div>
-                          </SwipeableListItem>
-                        </SwipeableList>
-                    </div>
-                    : null
-                  }
-            </div> {/* swipeWrapper*/}
-          </div> /* empCard */
+            <div className="content-instruction">
+              MARK YOUR ATTENDANCE
+            </div>
+            <Bounce >
+              <div className="date-wrapper">
+                <div className="date--wrapper-day">
+                  {this.state.currentDay},
+                </div>
+                <div className="date-wrapper-date">
+                  {this.state.currentDate}
+                </div>
+              </div>
+            </Bounce>
+            <div className="options-wrapper">
+              <div className="option-1" onClick={() => this.handleOption('wfh')}>
+                <Radio
+                  checked={this.state.selectedOption === 'wfh'}
+                  // onChange={() => this.handleOption('wfh')}
+                  value="wfh"
+                  name="radio-button-demo"
+                  inputProps={{ 'aria-label': 'A' }}
+                /> Work From Home
+              </div>
+              <div className="option-2" onClick={() => this.handleOption('present')}>
+                <Radio
+                  checked={this.state.selectedOption === 'present'}
+                  onChange={() => this.handleOption('present')}
+                  value="office"
+                  name="radio-button-demo"
+                  inputProps={{ 'aria-label': 'B' }}
+                /> Work from Office
+              </div>
+            </div>
+            <div>
+              {/* Submit */}
+              <Button variant="contained" className="submit">
+                Submit
+              </Button>
+            </div>
+          </div>
+          </Fade>
         }
-        </div>  {/* main class */}
+        </div>  {/* content */}
         <Snackbar
 						anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
 						open={this.state.open}

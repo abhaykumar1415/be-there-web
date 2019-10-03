@@ -1,0 +1,12 @@
+.header-wrapper {
+  background-color: white !important;
+  box-shadow: none !important;
+}
+.header-icon {
+  height: 25px;
+}
+.header-wrapper-content {
+  display: flex;
+  justify-content: center;
+  justify-content: space-between;
+}

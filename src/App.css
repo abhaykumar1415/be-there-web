@@ -1,19 +1,24 @@
 body {
-  background-color: #0e3745;
+  background-color: white !important;
 }
 
-.wrapper{
-  display: flex;
-  justify-content: center;
-  height: 102vh;
+@font-face {
+  font-family: 'Circular-Air-Book';
+  src: url('./assets/Circular-Air-Book.ttf');
 }
+
+@font-face {
+  font-family: 'Circular-Air-Light';
+  src: url('./assets/Circular-Air-Light.ttf');
+}
+
 
 .main_class{
   display: flex;
   align-items: center;
   justify-content: center;
   /* background: url(assets/image.png); */
-  height: 102vh;
+  height: 100vh;
   width: 100%;
 }
 .text-align{
@@ -76,7 +81,3 @@ body {
   background-color: #DD0130;
 }
 
-.logo{
-  display: flex;
-  justify-content: center;
-}

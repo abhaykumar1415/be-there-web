@@ -1,145 +1,102 @@
-.dpWrapper {
-  /* border-radius: 5px; */
-  border-radius: 50%;
-  height: 100px;
-  border: 3px solid #90CAF9;
-  box-shadow: 0px 0px 2vw #B2EBF2;
+@font-face {
+  font-family: 'Circular-Air-Book';
+  src: url('../../assets/Circular-Air-Book.ttf');
 }
-.empInfo{
+
+@font-face {
+  font-family: 'Circular-Air-Light';
+  src: url('../../assets/Circular-Air-Light.ttf');
+}
+
+.main_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 100vh;
+  /* width: 100%; */
+}
+
+.content {
+  height: 100%;
+  width: 100%;
+  /* margin-left: 10%; */
   display: flex;
   flex-direction: column;
-  height: 100px;
-  justify-content: space-evenly;
-}
-
-.font_style {
-  font-size: 22px;
-  font-family: monospace;
-  color: white;
-}
-
-
-.cardHeader{
-  display: flex;
-  height: 30vh;
+  justify-content: space-between;
   margin-top: 100px;
-  /* width: 53vh; */
-  justify-content: space-evenly;
-  align-items: center;
-  /* margin: 0 10px 0 10px; */
-  margin-left: 20px;
-  margin-right: 20px;
-  border: 1px solid #E0E0E0;
-  border-radius: 5px;
-  /* background-image: url('../../assets/bg5.png'); */
 }
 
-.empCard{
-  display: flex;
-  flex-direction: column;
-  height: 102vh;
-  justify-content: space-around;
-  width: 100%;
-  background-color: #0e3745;
+.content-greetings-primary {
+  font-family: Circular-Air-Light;
+  color: #161A1F;
+  font-size: 25px;
+  margin-bottom: 5%;
+  margin-left: 5%;
 }
 
-.EmpPageWrapper{
-  display: flex;
-  justify-content: space-evenly;
-  padding-top: 100px;
+.content-greetings-secondray {
+  font-size: 25px;
+  font-family: Circular-Air-Light;
+  color: rgb(143, 143, 143);
+  margin-left: 5%;
 }
 
-.swipeWrapper{
-  /* margin-top: 50%; */
-    font-size: 40px;
-    /* margin-top: 50%; */
-    font-size: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.ctaWrapper {
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-  margin-bottom: 10%;
-}
-.swipeElementWrapper {
-  color: green;
-  width: 90%;
-  padding-left: 5%;
-  border: 1px solid black;
-  padding-right: 5%;
-  border-radius: 5px;
-  background: #ffc008
-}
-
-.swipeElement {
-  width: 100%;
-  font-size: small;
-  display: flex;
-  align-items: center;
-  height: 50px;
-  align-items: center;
-  background: #ffc008
-}
-
-.swipeElementText {
-  background: #ffc008;
-  border-radius: 52px;
+.line {
+  font-weight: 700;
   font-size: x-large;
-  width: 33px;
-  color: #dd5201;
-  background: #ffc008;
+  color: #161A1F;
+  margin-left: 5%;
 }
 
-
-/* box-shadow: 0px 0px 2vw; */
-
-
-.circle {
-  width: 30px;
+.content-instruction {
+  font-size: 13px;
+  font-family: Circular-Air-Book;
+  color: rgb(143, 143, 143);
+  font-weight: bold;
+  margin-left: 5%;
 }
 
-.SwipeableListItem_swipeableListItem__3Tgya {
-  background: #ffc008;
+.date-wrapper {
+  margin-left: 5%;
 }
 
-.buttonDisabled {
-  background-color: rgba(235, 31, 74, 0.47) !important;
-  color: #FFFFFF !important;
-  border-radius: '5px' !important;
-  padding: 16px 50px !important;
-}
-.buttonEnabled {
-  background-color: rgb(235, 31, 74) !important;
-  color:#FFFFFF !important;
-  border-radius: '5px' !important;
-  padding: 16px 50px !important;
+.date--wrapper-day {
+  font-size: 40px;
+  font-family: Circular-Air-Light;
 }
 
-.selected {
-  box-shadow: 0px 0px 3vw #fff !important;
+.date-wrapper-date {
+  font-size: 40px;
+  color: #F2005D;
+  font-family: Circular-Air-Light;
 }
 
-.responseWrapper{
-  width: 100%;
-  border: 1px solid;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  height: 61px;
-  background: #ffc008;
+.options-wrapper {
+  margin-left: 2%;
+  font-family: Circular-Air-Light;
 }
 
-.responseText {
-  font-size: initial;
-  color: #1B5E20;
-  font-weight: 800;
-  font-family: monospace;
+.option-1 {
+  font-size: 20px;
+  font-family: Circular-Air-Light;
 }
-.loadingWrapper {
-  align-items: center
+
+.option-2 {
+  font-size: 20px;
+  font-family: Circular-Air-Light;
+}
+
+.submit {
+  font-size: 12px !important;
+  background-color: #161A1F !important;
+  color: white !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 60px !important;
+  display: flex !important;
+  border-radius: 0px !important;
+  font-family: Circular-Air-Light !important;
 }
