@@ -1,23 +1,15 @@
 
 import React, { useState, useRef, useEffect, Component } from 'react';
 import Button from '@material-ui/core/Button';
-
-import AttendancePage from '../attendancePage/index'
-// import  GoogleLogout from 'react-google-login';
 import Header from '../header/index';
 import Cookie from '../../services/cookie';
 import API from '../../services/api';
-import ReactSwipe from 'react-swipe';
-import Hammer from 'hammerjs';
 import './style.css';
 import Snackbar from '@material-ui/core/Snackbar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { SwipeableList, SwipeableListItem } from '@sandstreamdev/react-swipeable-list';
 import '@sandstreamdev/react-swipeable-list/dist/styles.css';
-
-
-
 
 class Home extends Component {
   constructor(props) {
@@ -41,7 +33,10 @@ class Home extends Component {
       hasMarkedTodayAttendance: false,
       errorMsg: '',
       wfhDisabled: true,
-      loading: true
+      loading: true,
+      location:null,
+      errorMessage:null,
+      position:null,
     }
   }
 
@@ -142,6 +137,7 @@ class Home extends Component {
       this.setState({wfhDisabled: false});
     }
   }
+  
   async componentDidMount () {
     // this.sliderJs();
     this.checkIfValidTimeForWFH()
@@ -167,12 +163,10 @@ class Home extends Component {
     //   ) 
 
       let user = Cookie.getCookie('user');
-      // console.log(' User in did  mouht :', user);
       this.setState({user});
       let date=new Date().toLocaleDateString('en-US', {day: 'numeric'})
       this.setState({currentDate:date});
       let month=new Date().toLocaleDateString('en-US', {month: 'short'})
-      // new Date().toLocaleDateString('en-US', { month: 'short',timeZone: 'UTC' })
       this.setState({currentMonth:month});
       let year=new Date().toLocaleDateString('en-US', {year: 'numeric'})
       this.setState({currentYear:year});
@@ -180,8 +174,6 @@ class Home extends Component {
       this.setState({currentDay:day});
       let userFound = await API.postUser({email:user.email});
       this.checkIfAttendanceMarked();
-      // console.log('userFound :', userFound);
-      
     }
 
     getWFHClass = () => {
@@ -204,11 +196,12 @@ class Home extends Component {
         }
     }
 
-  render () {
     
+  render () {
+   
   return(
     <div className="wrapper_content">
-      <div><Header/></div>
+      <div><Header /></div>
         <div className="main_class">
           {
           this.state.loading ?
@@ -288,6 +281,7 @@ class Home extends Component {
 						}}
 						message={<span id="message-id">{this.state.errorMsg}</span>}
 				/>
+        
     </div>
     )
   }
