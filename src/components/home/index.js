@@ -10,6 +10,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { SwipeableList, SwipeableListItem } from '@sandstreamdev/react-swipeable-list';
 import '@sandstreamdev/react-swipeable-list/dist/styles.css';
+import PopUp from '../popup';
+
+
 
 class Home extends Component {
   constructor(props) {
@@ -37,7 +40,12 @@ class Home extends Component {
       location:null,
       errorMessage:null,
       position:null,
+      locationPermission: false
     }
+    this.reRender = () => {
+      console.log(' in re render');
+      this.getGeoLocation();
+    };
   }
 
   handleClose = (event) => {
@@ -112,6 +120,7 @@ class Home extends Component {
         let lat = position.coords.latitude
         let lng = position.coords.longitude
         console.log("getCurrentPosition Success " + lat + lng) // logs position correctly
+        this.setState({locationPermission: true})
         this.setState({
           geoLocation: {
             lat: lat,
@@ -121,6 +130,7 @@ class Home extends Component {
       },
       (error) => {
         //  this.props.displayError("Error dectecting your geoLocation");
+        this.setState({locationPermission: false});
         console.error("geolocation error :",error);
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
@@ -137,7 +147,7 @@ class Home extends Component {
       this.setState({wfhDisabled: false});
     }
   }
-  
+
   async componentDidMount () {
     // this.sliderJs();
     this.checkIfValidTimeForWFH()
@@ -202,6 +212,11 @@ class Home extends Component {
   return(
     <div className="wrapper_content">
       <div><Header /></div>
+      {
+        !this.state.locationPermission ? 
+        <PopUp />
+        : null
+      }
         <div className="main_class">
           {
           this.state.loading ?
