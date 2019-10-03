@@ -81,6 +81,7 @@ class Home extends Component {
 
   handleSwipe = async () => {
     let user_id = Cookie.getCookie('user')._id;
+    await this.getGeoLocation();
     let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
     if (result.success ) {
       try {
@@ -110,6 +111,27 @@ class Home extends Component {
 
   }
 
+  getGeoLocation = async () => {
+    return await navigator.geolocation.getCurrentPosition (
+      (position) => {
+        let lat = position.coords.latitude
+        let lng = position.coords.longitude
+        console.log("getCurrentPosition Success " + lat + lng) // logs position correctly
+        this.setState({
+          geoLocation: {
+            lat: lat,
+            lng: lng
+          }
+        })
+      },
+      (error) => {
+        //  this.props.displayError("Error dectecting your geoLocation");
+        console.error("geolocation error :",error);
+      },
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+      ) 
+  }
+
   checkIfValidTimeForWFH = ( ) => {
     let hr =  new Date().getHours();
     let min = new Date().getMinutes();
@@ -123,24 +145,27 @@ class Home extends Component {
   async componentDidMount () {
     // this.sliderJs();
     this.checkIfValidTimeForWFH()
-    navigator.geolocation.getCurrentPosition (
-      (position) => {
-        let lat = position.coords.latitude
-        let lng = position.coords.longitude
-        // console.log("getCurrentPosition Success " + lat + lng) // logs position correctly
-        this.setState({
-          geoLocation: {
-            lat: lat,
-            lng: lng
-          }
-        })
-      },
-      (error) => {
-        //  this.props.displayError("Error dectecting your geoLocation");
-        // console.error(JSON.stringify(error))
-      },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-      ) 
+    this.getGeoLocation();
+    
+    // navigator.geolocation.getCurrentPosition (
+    //   (position) => {
+    //     let lat = position.coords.latitude
+    //     let lng = position.coords.longitude
+    //     console.log("getCurrentPosition Success " + lat + lng) // logs position correctly
+    //     this.setState({
+    //       geoLocation: {
+    //         lat: lat,
+    //         lng: lng
+    //       }
+    //     })
+    //   },
+    //   (error) => {
+    //     //  this.props.displayError("Error dectecting your geoLocation");
+    //     console.error(JSON.stringify(error))
+    //   },
+    //   {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+    //   ) 
+
       let user = Cookie.getCookie('user');
       // console.log(' User in did  mouht :', user);
       this.setState({user});
