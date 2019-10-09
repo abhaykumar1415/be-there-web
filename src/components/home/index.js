@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import Header from '../header/index';
@@ -7,13 +6,21 @@ import API from '../../services/api';
 import './style.css';
 import Snackbar from '@material-ui/core/Snackbar';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { SwipeableList, SwipeableListItem } from '@sandstreamdev/react-swipeable-list';
+// import { SwipeableList, SwipeableListItem } from '@sandstreamdev/react-swipeable-list';
 import '@sandstreamdev/react-swipeable-list/dist/styles.css';
 import PopUp from '../popup';
 import Radio from '@material-ui/core/Radio';
 import Pulse from 'react-reveal/Pulse';
 import Fade from 'react-reveal/Fade';
 import Bounce from 'react-reveal/Bounce';
+import CancelIcon from '@material-ui/icons/Cancel';
+
+// Transition
+
+import Slide from '@material-ui/core/Slide';
+import Paper from '@material-ui/core/Paper';
+import Collapse from '@material-ui/core/Collapse';
+import Grow from '@material-ui/core/Grow';
 
 
 class Home extends Component {
@@ -34,7 +41,7 @@ class Home extends Component {
         lat: 0,
         lng: 0
       },
-      showSlider: true,
+      // showSlider: true,
       hasMarkedTodayAttendance: false,
       errorMsg: '',
       wfhDisabled: true,
@@ -42,7 +49,10 @@ class Home extends Component {
       location:null,
       errorMessage:null,
       position:null,
-      locationPermission: false
+      locationPermission: false,
+      submitLoading: false,
+      showSubmitButton: true,
+      flag_WFH: false
     }
     this.reRender = () => {
       console.log(' in re render');
@@ -51,6 +61,8 @@ class Home extends Component {
   }
 
   handleClose = (event) => {
+    console.log('snackbar closed');
+    this.setState({showSubmitButton: true});
     if (this.state.anchorRef && this.state.anchorRef.contains(event.target)) {
       return;
     }
@@ -58,30 +70,43 @@ class Home extends Component {
   }
 
   handleOption = async (option) => {
+    let validWFH = true;
+    if (option === 'wfh') {
+      this.setState({flag_WFH: true});
+      if ( !this.state.wfhDisabled ) {
+        validWFH = false;
+      }
+    }
     try {
       // window.navigator.vibrate(100);
-      try {
+      if ( !validWFH ) {
+        this.setState({selectedOption: option});
         window.navigator.vibrate(100);
-      } catch(err ) {
-        console.log('vibration error :', err);
+      } else {
+        window.navigator.vibrate([200, 100, 200]);
       }
     } catch(err ) {
       console.log('vibration error :', err);
     }
-    this.setState({selectedOption: option});
   }
 
-  handleSwipe = async () => {
+  handleSubmit = async () => {
+    this.setState({submitLoading: true});
     let user_id = Data.getData('user')._id;
-    await this.getGeoLocation();
+    let gotGeolocation = await this.getGeoLocation();
+    console.log(' got geolocation :', gotGeolocation);
+    // if ( !gotGeolocation) {
+
+    // }
     let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
+    console.log('submit result :',result)
     if (result.success ) {
       try {
         window.navigator.vibrate(100);
       } catch(err ) {
       }
-      this.setState({showSlider: false});
-      this.setState({open:true, errorMsg: result.msg, hasMarkedTodayAttendance: true, showSlider: false});
+      // this.setState({showSlider: false});
+      this.setState({open:true, errorMsg: result.msg, hasMarkedTodayAttendance: true});
     } else {
       try {
         window.navigator.vibrate([200, 100, 200]);
@@ -89,37 +114,40 @@ class Home extends Component {
       }
       this.setState({open:true, errorMsg: result.msg});
     }
+    this.setState({showSubmitButton: false});
+    this.setState({submitLoading: false})
   }
 
   checkIfAttendanceMarked = async () => {
     let result =  await API.getAttendance();
     this.setState({loading: false})
     if (result === true) {
-      this.setState({hasMarkedTodayAttendance: result, showSlider: false});
+      this.setState({hasMarkedTodayAttendance: result});
     }
 
   }
 
   getGeoLocation = async () => {
-    return await navigator.geolocation.getCurrentPosition (
-      (position) => {
-        let lat = position.coords.latitude
-        let lng = position.coords.longitude
-        console.log("getCurrentPosition Success " + lat + lng) // logs position correctly
-        this.setState({locationPermission: true})
-        this.setState({
-          geoLocation: {
-            lat: lat,
-            lng: lng
-          }
-        })
-      },
-      (error) => {
-        this.setState({locationPermission: false});
-        console.error("geolocation error :",error);
-      },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-      ) 
+    return new Promise( (resolve, reject) => {
+      navigator.geolocation.getCurrentPosition (
+        (position) => {
+          let lat = position.coords.latitude
+          let lng = position.coords.longitude
+          let geoLocation = {lat: lat, lng: lng};
+          console.log("getCurrentPosition Success " + lat + lng); // logs position correctly
+          this.setState({locationPermission: true});
+          this.setState({geoLocation});
+          resolve(true);
+        },
+        (error) => {
+          this.setState({locationPermission: false});
+          console.error("geolocation error :",error);
+          resolve(false);
+
+        },
+        {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+        ) 
+    })
   }
 
   checkIfValidTimeForWFH = ( ) => {
@@ -151,26 +179,29 @@ class Home extends Component {
     this.checkIfAttendanceMarked();
     }
 
-    getWFHClass = () => {
-        if (this.state.wfhDisabled) {
-          return "buttonDisabled";
-        }
-        else {
-          if (this.state.selectedOption === "WFH") {
-            return "buttonEnabled selected";
-          } else {
-            return "buttonEnabled";
-          }
-      } 
-    }
-    getPresentClass = () => {
-        if (this.state.selectedOption === "PRESENT") {
-          return "buttonEnabled selected";
-        } else {
-          return "buttonEnabled";
-        }
-    }
+    // getWFHClass = () => {
+    //     if (this.state.wfhDisabled) {
+    //       return "buttonDisabled";
+    //     }
+    //     else {
+    //       if (this.state.selectedOption === "WFH") {
+    //         return "buttonEnabled selected";
+    //       } else {
+    //         return "buttonEnabled";
+    //       }
+    //   } 
+    // }
+    // getPresentClass = () => {
+    //     if (this.state.selectedOption === "PRESENT") {
+    //       return "buttonEnabled selected";
+    //     } else {
+    //       return "buttonEnabled";
+    //     }
+    // }
 
+    // handleSubmit = () => {
+    //   this.setState({submitLoading: true})
+    // }
     
   render () {
    
@@ -195,9 +226,14 @@ class Home extends Component {
           <div className="content">
             <div>
               {/* <Pulse> */}
+              {/* <Grow
+                style={{ transformOrigin: '0 0 0' }}
+                 timeout='1000'
+              > */}
                 <div className="content-greetings-primary">
                     welcome, {this.state.user.name}
                 </div>
+              {/* </Grow> */}
               {/* </Pulse> */}
               <div className="content-greetings-secondray">
                 <div>
@@ -227,32 +263,63 @@ class Home extends Component {
                 </div>
               </div>
             </Bounce>
-            <div className="options-wrapper">
-              <div className="option-1" onClick={() => this.handleOption('wfh')}>
-                <Radio
-                  checked={this.state.selectedOption === 'wfh'}
-                  // onChange={() => this.handleOption('wfh')}
-                  value="wfh"
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': 'A' }}
-                /> Work From Home
+            {
+              this.state.flag_WFH ? 
+              <Slide direction="up" in={this.state.flag_WFH} mountOnEnter unmountOnExit>
+                <Paper elevation={4} className='wfh-selection-wrapper'>
+                  <h1>
+                     why are you working from home.
+                  </h1>
+                </Paper>
+              </Slide>
+              : 
+                <div className="options-wrapper">
+                <div className="option-1" onClick={() => this.handleOption('wfh')}>
+                  {/* <Radio
+                    checked={this.state.selectedOption === 'wfh'}
+                    // onChange={() => this.handleOption('wfh')}
+                    value="wfh"
+                    name="radio-button-demo"
+                    inputProps={{ 'aria-label': 'A' }}
+                    disabled={this.state.wfhDisabled}
+                  /> */}
+                  {/* Work From Home */}
+                  <Button variant="contained" className='submit'>
+                      Work from Home
+                  </Button>
+                </div>
+                <div className="option-2" onClick={() => this.handleOption('present')}>
+                  {/* <Radio
+                    checked={this.state.selectedOption === 'present'}
+                    onChange={() => this.handleOption('present')}
+                    value="office"
+                    name="radio-button-demo"
+                    inputProps={{ 'aria-label': 'B' }}
+                  /> */}
+                  {/* Work from Office */}
+                  <Button variant="contained" className='submit'>
+                      Work from Office
+                  </Button>
+                </div>
               </div>
-              <div className="option-2" onClick={() => this.handleOption('present')}>
-                <Radio
-                  checked={this.state.selectedOption === 'present'}
-                  onChange={() => this.handleOption('present')}
-                  value="office"
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': 'B' }}
-                /> Work from Office
-              </div>
-            </div>
-            <div>
+            }
+            {
+              this.state.showSubmitButton ?
+              <div className="submit-wrapper">
               {/* Submit */}
-              <Button variant="contained" className="submit">
-                Submit
+              {/* <Button variant="contained" className={this.state.submitLoading ? 'transition submit ': 'submit'}
+              onClick={() => this.handleSubmit()}> */}
+              <Button variant="contained" className='submit'
+              onClick={() => this.handleSubmit()}>
+                {
+                  this.state.submitLoading ? <CircularProgress color="secondary" />
+                  : 'submit'
+                }
               </Button>
+            </div> : 
+            <div className="submit-wrapper">
             </div>
+            }
           </div>
           </Fade>
         }
@@ -263,8 +330,17 @@ class Home extends Component {
 						onClose={() => this.handleClose ()}
 						ContentProps={{
 						'aria-describedby': 'message-id',
-						}}
-						message={<span id="message-id">{this.state.errorMsg}</span>}
+            }}
+            className="snackbar-wrapper"
+						message={
+            <div id="message-id" className="snackbar-text">
+                <div>
+                  {this.state.errorMsg}
+                </div>
+                <div>
+                <CancelIcon />
+                </div>
+            </div>}
 				/>
         
     </div>
