@@ -23,12 +23,20 @@ import Collapse from '@material-ui/core/Collapse';
 import Grow from '@material-ui/core/Grow';
 
 
+// Sliding dailog
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open:false,
-      selectedIndex:'0',
+      // selectedIndex:'0',
       redirect:false,
       anchorRef:null,
       currentDate:'',
@@ -43,7 +51,7 @@ class Home extends Component {
       },
       // showSlider: true,
       hasMarkedTodayAttendance: false,
-      errorMsg: '',
+      errorMsg: null,
       wfhDisabled: true,
       loading: true,
       location:null,
@@ -52,7 +60,9 @@ class Home extends Component {
       locationPermission: false,
       submitLoading: false,
       showSubmitButton: true,
-      flag_WFH: false
+      flag_WFH: false,
+      flag_PRESENT: false,
+      selectedRadio: ''
     }
     this.reRender = () => {
       console.log(' in re render');
@@ -60,13 +70,14 @@ class Home extends Component {
     };
   }
 
+  Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+
+
   handleClose = (event) => {
     console.log('snackbar closed');
-    this.setState({showSubmitButton: true});
-    if (this.state.anchorRef && this.state.anchorRef.contains(event.target)) {
-      return;
-    }
-    this.setState({open:false})
+    this.setState({flag_WFH: false, flag_PRESENT : false});
   }
 
   handleOption = async (option) => {
@@ -76,6 +87,8 @@ class Home extends Component {
       if ( !this.state.wfhDisabled ) {
         validWFH = false;
       }
+    } else {
+      this.setState({flag_PRESENT : true});
     }
     try {
       // window.navigator.vibrate(100);
@@ -91,7 +104,7 @@ class Home extends Component {
   }
 
   handleSubmit = async () => {
-    this.setState({submitLoading: true});
+    this.setState({submitLoading: true, errorMsg : null});
     let user_id = Data.getData('user')._id;
     let gotGeolocation = await this.getGeoLocation();
     console.log(' got geolocation :', gotGeolocation);
@@ -116,6 +129,7 @@ class Home extends Component {
     }
     this.setState({showSubmitButton: false});
     this.setState({submitLoading: false})
+    this.setState({flag_PRESENT: false, flag_WFH: false});
   }
 
   checkIfAttendanceMarked = async () => {
@@ -162,6 +176,7 @@ class Home extends Component {
   }
 
   async componentDidMount () {
+    console.log(' yo ');
     this.checkIfValidTimeForWFH()
     this.getGeoLocation();
     let user = Data.getData('user');
@@ -179,29 +194,9 @@ class Home extends Component {
     this.checkIfAttendanceMarked();
     }
 
-    // getWFHClass = () => {
-    //     if (this.state.wfhDisabled) {
-    //       return "buttonDisabled";
-    //     }
-    //     else {
-    //       if (this.state.selectedOption === "WFH") {
-    //         return "buttonEnabled selected";
-    //       } else {
-    //         return "buttonEnabled";
-    //       }
-    //   } 
-    // }
-    // getPresentClass = () => {
-    //     if (this.state.selectedOption === "PRESENT") {
-    //       return "buttonEnabled selected";
-    //     } else {
-    //       return "buttonEnabled";
-    //     }
-    // }
-
-    // handleSubmit = () => {
-    //   this.setState({submitLoading: true})
-    // }
+    handleRadioChange = (reason) => {
+      this.setState({selectedRadio: reason});
+    }
     
   render () {
    
@@ -251,9 +246,16 @@ class Home extends Component {
               </div>
             </div>
             <div className="content-instruction">
-              MARK YOUR ATTENDANCE
+              {
+                this.state.errorMsg ? 
+                <span>{this.state.errorMsg}</span>
+                : 
+                <span>
+                  MARK YOUR ATTENDANCE
+                </span>
+              }
             </div>
-            <Bounce >
+            {/* <Bounce > */}
               <div className="date-wrapper">
                 <div className="date--wrapper-day">
                   {this.state.currentDay},
@@ -262,72 +264,51 @@ class Home extends Component {
                   {this.state.currentDate}
                 </div>
               </div>
-            </Bounce>
+            {/* </Bounce> */}
             {
-              this.state.flag_WFH ? 
-              <Slide direction="up" in={this.state.flag_WFH} mountOnEnter unmountOnExit>
-                <Paper elevation={4} className='wfh-selection-wrapper'>
-                  <h1>
-                     why are you working from home.
-                  </h1>
-                </Paper>
-              </Slide>
-              : 
+              // this.state.flag_WFH ? 
+              // <div>
+              //     YO!
+              // </div>
+              // : 
                 <div className="options-wrapper">
-                <div className="option-1" onClick={() => this.handleOption('wfh')}>
-                  {/* <Radio
-                    checked={this.state.selectedOption === 'wfh'}
-                    // onChange={() => this.handleOption('wfh')}
-                    value="wfh"
-                    name="radio-button-demo"
-                    inputProps={{ 'aria-label': 'A' }}
-                    disabled={this.state.wfhDisabled}
-                  /> */}
-                  {/* Work From Home */}
-                  <Button variant="contained" className='submit'>
-                      Work from Home
-                  </Button>
-                </div>
-                <div className="option-2" onClick={() => this.handleOption('present')}>
-                  {/* <Radio
-                    checked={this.state.selectedOption === 'present'}
-                    onChange={() => this.handleOption('present')}
-                    value="office"
-                    name="radio-button-demo"
-                    inputProps={{ 'aria-label': 'B' }}
-                  /> */}
-                  {/* Work from Office */}
-                  <Button variant="contained" className='submit'>
-                      Work from Office
-                  </Button>
-                </div>
+                  <div className="option-1" onClick={() => this.handleOption('wfh')}>
+                    <Button variant="contained" className='option-button'>
+                        Work from Home
+                    </Button>
+                  </div>
+                  <div className="option-2" onClick={() => this.handleOption('present')}>
+                    <Button variant="contained" className='option-button'>
+                        Work from Office
+                    </Button>
+                  </div>
               </div>
             }
             {
-              this.state.showSubmitButton ?
-              <div className="submit-wrapper">
-              {/* Submit */}
-              {/* <Button variant="contained" className={this.state.submitLoading ? 'transition submit ': 'submit'}
-              onClick={() => this.handleSubmit()}> */}
-              <Button variant="contained" className='submit'
-              onClick={() => this.handleSubmit()}>
-                {
-                  this.state.submitLoading ? <CircularProgress color="secondary" />
-                  : 'submit'
-                }
-              </Button>
-            </div> : 
-            <div className="submit-wrapper">
-            </div>
+            //   this.state.showSubmitButton ?
+            //   <div className="submit-wrapper">
+            //   {/* <Button variant="contained" className='submit'
+            //   onClick={() => this.handleSubmit()}>
+            //     {
+            //       this.state.submitLoading ? <CircularProgress color="secondary" />
+            //       : 'submit'
+            //     }
+            //   </Button> */}
+            //   <h1> {this.state.errorMsg} </h1>
+            // </div> : 
+              // <div className="submit-wrapper">
+              //   {/* <span> {this.state.errorMsg} </span> */}
+              //   Abhay
+              // </div>
             }
           </div>
           </Fade>
         }
         </div>  {/* content */}
-        <Snackbar
+        {/* <Snackbar
 						anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
 						open={this.state.open}
-						onClose={() => this.handleClose ()}
+						onClose={() => this.handleClose()}
 						ContentProps={{
 						'aria-describedby': 'message-id',
             }}
@@ -341,7 +322,88 @@ class Home extends Component {
                 <CancelIcon />
                 </div>
             </div>}
-				/>
+				/> */}
+        <Dialog
+          open={this.state.flag_WFH || this.state.flag_PRESENT}
+          TransitionComponent={this.Transition}
+          keepMounted
+          onClose={() => this.handleClose()}
+          aria-labelledby="alert-dialog-slide-title"
+          aria-describedby="alert-dialog-slide-description"
+          className="dialog-wrapper"
+        >
+          <div className="dialog-wrapper-content">
+            <DialogTitle id="alert-dialog-slide-title" className="">
+              {/* {"Use Google's location service?"} */}
+              { this.state.flag_WFH ? "WORK FROM HOME" : "OFFICE" }
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-slide-description" className="dialog-wrapper-content-text">
+                { this.state.flag_WFH ?
+                <div className="dialog-wrapper-radio-wrapper">
+                  <span className="dialog-wrapper-radio-wrapper-wfh-text">
+                    Please let us know the reasons for your working from home.
+                  </span>
+                  <div onClick={() => this.handleRadioChange('personal')}>
+                    <Radio
+                      checked={this.state.selectedRadio === 'personal'}
+                      // onChange={() => this.handleRadioChange('personal')}
+                      value="Personal reasons"
+                      name="radio-button-demo"
+                      inputProps={{ 'aria-label': 'Personal Reasons' }}
+                    />
+                    Personal reasons
+                  </div>
+                  <div onClick={() => this.handleRadioChange('health')}>
+                    <Radio
+                      checked={this.state.selectedRadio === 'health'}
+                      // onChange={() => this.handleRadioChange('health')}
+                      value="Health issues"
+                      name="radio-button-demo"
+                      inputProps={{ 'aria-label': 'Health issues' }}
+                    />
+                    Health issues
+                  </div>
+                  <div onClick={() => this.handleRadioChange('DontFeelLikeComing')}>
+                    <Radio
+                      checked={this.state.selectedRadio === 'DontFeelLikeComing'}
+                      // onChange={() => this.handleRadioChange('DontFeelLikeComing')}
+                      value="Don’t feel like coming"
+                      name="radio-button-demo"
+                      inputProps={{ 'aria-label': 'Don’t feel like coming' }}
+                    />
+                    Don’t feel like coming
+                  </div>
+                    {/* <div className="submit-wrapper">
+                      <Button variant="contained" className='submit'
+                      onClick={() => this.handleSubmit()}>
+                        {
+                          this.state.submitLoading ? <CircularProgress color="secondary" />
+                          : 'submit'
+                        }
+                      </Button>
+                    </div> */}
+              </div>
+                 :
+                  <div>
+                    Hope you have a great day!
+                  </div>
+                  }
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions className="submit-button-wrapper">
+              {/* <div className="submit-wrapper"> */}
+                <Button variant="contained" className='submit'
+                onClick={() => this.handleSubmit()}>
+                  {
+                    this.state.submitLoading ? <CircularProgress color="secondary" />
+                    : 'submit'
+                  }
+                </Button>
+              {/* </div> */}
+            </DialogActions>
+          </div>
+        </Dialog>
         
     </div>
     )

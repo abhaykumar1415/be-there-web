@@ -23,7 +23,7 @@
   /* margin-left: 10%; */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   margin-top: 100px;
 }
 
@@ -54,7 +54,8 @@
   font-family: Circular-Air-Book;
   color: rgb(143, 143, 143);
   font-weight: bold;
-  margin-left: 5%;
+  /* margin-left: 5%; */
+  margin: 30px 5%;
 }
 
 .date-wrapper {
@@ -73,7 +74,6 @@
 }
 
 .options-wrapper {
-  margin-left: 2%;
   font-family: Circular-Air-Light;
 
   /**
@@ -81,6 +81,9 @@
   */
   display: flex;
   justify-content: space-around;
+  position: fixed;
+  bottom: 6%;
+  width: 100%;
 }
 
 .option-1 {
@@ -88,15 +91,15 @@
   font-family: Circular-Air-Light; */
     /* font-family: Circular-Air-Light; */
     /* font-size: 20px; */
-    font-family: Circular-Air-Light;
+    /* font-family: Circular-Air-Light;
     background: yellow;
     font-size: 15px;
     height: 50px;
     width: 40%;
     align-items: center;
-    justify-content: center;
+    justify-content: center; */
     /* text-align: center; */
-    display: flex;
+    /* display: flex; */
 }
 
 .option-2 {
@@ -104,33 +107,35 @@
   font-family: Circular-Air-Light; */
     /* font-family: Circular-Air-Light; */
     /* font-size: 20px; */
-    font-family: Circular-Air-Light;
+    /* font-family: Circular-Air-Light;
     background: yellow;
     font-size: 15px;
     height: 50px;
     width: 40%;
     align-items: center;
-    justify-content: center;
+    justify-content: center; */
     /* text-align: center; */
-    display: flex;
+    /* display: flex; */
 }
 
-.submit {
+.MuiButtonBase-root.MuiButton-contained {
   font-size: 12px !important;
   background-color: #161A1F !important;
   color: white !important;
-  bottom: 0 !important;
-  width: 100% !important;
-  align-items: center !important;
-  justify-content: center !important;
-  height: 60px !important;
-  display: flex !important;
   border-radius: 0px !important;
   font-family: Circular-Air-Light !important;
 }
 
+.submit.MuiButton-contained {
+  padding: 17px 65px;
+  max-height: 55px;
+}
+
+.option-button.MuiButton-contained {
+  padding: 16px;
+}
+
 .transition {
-  
   -webkit-transition: all 2s ease !important;  
   -moz-transition: all 2s ease !important;
   -o-transition: all 2s ease !important;
@@ -147,6 +152,7 @@
   height: 60px;
   justify-content: center;
   align-items: center;
+  margin-top: 10%;
 }
 
 .snackbar-wrapper {
@@ -165,4 +171,41 @@
 
 .wfh-selection-wrapper {
   height: 400px;
+}
+
+
+.dialog-wrapper-content {
+  margin: 0px;
+  height: 60vh;
+}
+
+
+.MuiDialog-container.MuiDialog-scrollPaper {
+  margin: 0;
+  align-items: flex-end;
+}
+
+.MuiPaper-root.MuiPaper-elevation24{
+  margin: 0;
+  border-top-right-radius: 15px;
+  border-top-left-radius: 15px;
+  width: 100%;
+  max-width: none;
+}
+
+/* .dialog-wrapper-content-text {
+  width: 100%
+} */
+
+.dialog-wrapper-radio-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-wrapper-radio-wrapper-wfh-text {
+  margin-bottom: 10%;
+}
+
+.submit-button-wrapper.MuiDialogActions-root {
+  justify-content: center;
 }
