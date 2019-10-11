@@ -19,7 +19,7 @@ const getAttendance = () => {
   const url = URL.BASE_URL + URL.USERS  + URL.ME_TODAY + _id;
   return axios.get(url)
     .then(function (response) {
-      return response.data.attendanceMarked;
+      return response.data;
     })
     .catch(function (error) {
       console.log(error);

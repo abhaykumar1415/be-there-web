@@ -4,10 +4,6 @@ const Cryptr = require('cryptr');
 const cryptr = new Cryptr(Constants.SECRET_KEY);
 
 const setData = (payload) => {
-  // console.log(' in set cookie')
-  // const expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365);
-  // const encryptedString = cryptr.encrypt(payload.data);
-  // cookie.save(payload.title, payload.data, { path: '/', expires })
   let data = JSON.stringify(payload.data);
   window.localStorage.setItem(payload.title, data);
 }
