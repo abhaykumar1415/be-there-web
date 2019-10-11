@@ -12,7 +12,7 @@
 
 .googleLogin{
     display: flex;
-    justify-content:'center';
+    justify-content:center;
   }
 .googleBtn {
   background-color: transparent;
@@ -31,6 +31,14 @@
   display: flex;
   justify-content: center;
   height: 100vh;
+  margin: 0 24px;
+}
+
+@media only screen and (min-width: 425px) {
+  .wrapper {
+    max-width: 425px;
+    margin: 0 auto;
+  }
 }
 
 .mainImage-wrapper {
@@ -63,16 +71,4 @@
   font-family: Circular-Air-Light;
   font-size: 25px;
   color: #161A1F;
-}
-
-.content-wrapper-text-wrapper-3 {
-  
-}
-
-.content-wrapper-text-wrapper-4 {
-  
-}
-
-.content-wrapper-text-wrapper-5 {
-  
 }

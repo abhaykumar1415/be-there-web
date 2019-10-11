@@ -77,7 +77,7 @@ class Home extends Component {
 
   handleClose = (event) => {
     console.log('snackbar closed');
-    this.setState({flag_WFH: false, flag_PRESENT : false});
+    this.setState({flag_WFH: false, flag_PRESENT : false, errorMsg: null});
   }
 
   handleOption = async (option) => {
@@ -113,6 +113,7 @@ class Home extends Component {
 
     // }
     let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
+    this.checkIfAttendanceMarked();
     console.log('submit result :',result)
     if (result.success ) {
       try {
@@ -169,7 +170,7 @@ class Home extends Component {
 
         },
         {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-        ) 
+      )
     })
   }
 
@@ -178,7 +179,7 @@ class Home extends Component {
     let min = new Date().getMinutes();
     if (hr <= 10) {
       this.setState({wfhDisabled: false});
-    } 
+    }
     else if (hr === 10  &&  min <= 30) {
       this.setState({wfhDisabled: false});
     }
@@ -200,124 +201,123 @@ class Home extends Component {
     this.setState({user, currentDay:day, currentDate});
     await API.postUser({email:user.email});
     this.checkIfAttendanceMarked();
-    }
+  }
 
-    handleRadioChange = (reason) => {
-      this.setState({selectedRadio: reason});
-    }
-    
+  handleRadioChange = (reason) => {
+    this.setState({selectedRadio: reason});
+  }
+
   render () {
-   
-  return(
-    <div className="wrapper_content">
-      <div><Header /></div>
-      {/* {
-        !this.state.locationPermission ? 
+
+    return(
+      <div className="wrapper_content">
+        <div><Header /></div>
+        {/* {
+        !this.state.locationPermission ?
         <PopUp />
         : null
       } */}
         <div className="main_wrapper">
           {
-          this.state.loading ?
-          (
-            <div className="empCard loadingWrapper">
-              <CircularProgress color="secondary" />
-            </div>
-          )
-          :
-          <Fade>
-          <div className="content">
-            <div>
-              {/* <Pulse> */}
-              {/* <Grow
+            this.state.loading ?
+              (
+                <div className="empCard loadingWrapper">
+                  <CircularProgress color="secondary" />
+                </div>
+              )
+              :
+              <Fade>
+                <div className="content">
+                  <div>
+                    {/* <Pulse> */}
+                    {/* <Grow
                 style={{ transformOrigin: '0 0 0' }}
                  timeout='1000'
               > */}
-                <div className="content-greetings-primary">
-                    welcome, {this.state.user.name}
-                </div>
-              {/* </Grow> */}
-              {/* </Pulse> */}
-              <div className="content-greetings-secondray">
-                <div>
-                  Hope you had a great 
-                </div>
-                <div>
-                  sleep, time to start a fresh
-                </div>
-                <div>
-                  day!
-                </div>
-              </div>
-              <div className="line">
-                _______
-              </div>
-            </div>
-            <div className="content-instruction">
-                <span>
-                  MARK YOUR ATTENDANCE
-                </span>
-            </div>
-            {/* <Bounce > */}
-              <div className="date-wrapper">
-                <div className="date--wrapper-day">
-                  {this.state.currentDay},
-                </div>
-                <div className="date-wrapper-date">
-                  {this.state.currentDate}
-                </div>
-              </div>
-            {/* </Bounce> */}
-            {
-              // this.state.flag_WFH ? 
-              // <div>
-              //     YO!
-              // </div>
-              // : 
-                <div className="options-wrapper">
-                  {
-                    !this.state.hasMarkedTodayAttendance
-                      ?
-                        <div className="option-1" onClick={() => this.handleOption('wfh')}>
-                          <Button variant="contained" className='option-button'>
-                              Work from Home
-                          </Button>
-                        </div>
-                      : null
-                  }
-                  {
-                    this.state.hasMarkedTodayAttendance && this.state.todayAttendanceType === 'present' 
-                      ?
-                        null
-                      :
-                      <div className="option-2" onClick={() => this.handleOption('present')}>
-                        <Button variant="contained" className='option-button'>
-                            Work from Office
-                        </Button>
+                    <div className="content-greetings-primary">
+                      welcome, {this.state.user.name}
+                    </div>
+                    {/* </Grow> */}
+                    {/* </Pulse> */}
+                    <div className="content-greetings-secondray">
+                      <div>
+                        Hope you had a great
                       </div>
+                      <div>
+                        sleep, time to start a fresh
+                      </div>
+                      <div>
+                        day!
+                      </div>
+                    </div>
+                    <div className="line">
+                    </div>
+                  </div>
+                  {/* <Bounce > */}
+                  <div className="date-wrapper">
+                    <div className="content-instruction">
+                      <span>
+                        MARK YOUR ATTENDANCE
+                      </span>
+                    </div>
+                    <div className="date--wrapper-day">
+                      {this.state.currentDay},
+                    </div>
+                    <div className="date-wrapper-date">
+                      {this.state.currentDate}
+                    </div>
+                  </div>
+                  {/* </Bounce> */}
+                  {
+                    // this.state.flag_WFH ?
+                    // <div>
+                    //     YO!
+                    // </div>
+                    // :
+                    <div className="options-wrapper">
+                      {
+                        !this.state.hasMarkedTodayAttendance
+                          ?
+                          <div className="option-1" onClick={() => this.handleOption('wfh')}>
+                            <Button variant="contained" className='option-button'>
+                              Work from Home
+                            </Button>
+                          </div>
+                          : null
+                      }
+                      {
+                        this.state.hasMarkedTodayAttendance && this.state.todayAttendanceType !== 'wfh'
+                          ?
+                          null
+                          :
+                          <div className="option-2" onClick={() => this.handleOption('present')}>
+                            <Button variant="contained" className='option-button'>
+                              Work from Office
+                            </Button>
+                          </div>
+                      }
+                    </div>
                   }
-              </div>
-            }
-            {
-            //   this.state.showSubmitButton ?
-            //   <div className="submit-wrapper">
-            //   {/* <Button variant="contained" className='submit'
-            //   onClick={() => this.handleSubmit()}>
-            //     {
-            //       this.state.submitLoading ? <CircularProgress color="secondary" />
-            //       : 'submit'
-            //     }
-            //   </Button> */}
-            //   <h1> {this.state.errorMsg} </h1>
-            // </div> : 
-              // <div className="submit-wrapper">
-              //   {/* <span> {this.state.errorMsg} </span> */}
-              //   Abhay
-              // </div>
-            }
-          </div>
-          </Fade>
-        }
+                  {
+                    //   this.state.showSubmitButton ?
+                    //   <div className="submit-wrapper">
+                    //   {/* <Button variant="contained" className='submit'
+                    //   onClick={() => this.handleSubmit()}>
+                    //     {
+                    //       this.state.submitLoading ? <CircularProgress color="secondary" />
+                    //       : 'submit'
+                    //     }
+                    //   </Button> */}
+                    //   <h1> {this.state.errorMsg} </h1>
+                    // </div> :
+                    // <div className="submit-wrapper">
+                    //   {/* <span> {this.state.errorMsg} </span> */}
+                    //   Abhay
+                    // </div>
+                  }
+                </div>
+              </Fade>
+          }
         </div>  {/* content */}
         {/* <Snackbar
 						anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
@@ -346,59 +346,62 @@ class Home extends Component {
           aria-describedby="alert-dialog-slide-description"
           className="dialog-wrapper"
         >
-          <div className="dialog-wrapper-content">
+          <div
+            // className="dialog-wrapper-content"
+            className={this.state.errorMsg ? 'dialog-wrapper-content text-center' : 'dialog-wrapper-content'}
+          >
             <DialogTitle id="alert-dialog-slide-title" className="">
               {/* {"Use Google's location service?"} */}
               { this.state.flag_WFH ? "WORK FROM HOME" : "OFFICE" }
             </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-slide-description" className="dialog-wrapper-content-text">
+            <div>
+              <div id="alert-dialog-slide-description" className="dialog-wrapper-content-text">
                 { this.state.flag_WFH ?
-                <div className="dialog-wrapper-radio-wrapper">
-                  {
-                    !this.state.errorMsg
-                    ?
-                      <div>
-                        <span className="dialog-wrapper-radio-wrapper-wfh-text">
+                  <div className="dialog-wrapper-radio-wrapper">
+                    {
+                      !this.state.errorMsg
+                        ?
+                        <div>
+                        <div className="dialog-wrapper-radio-wrapper-wfh-text">
                           Please let us know the reasons for your working from home.
-                        </span>
-                              <div onClick={() => this.handleRadioChange('personal')}>
-                          <Radio
-                            checked={this.state.selectedRadio === 'personal'}
-                            // onChange={() => this.handleRadioChange('personal')}
-                            value="Personal reasons"
-                            name="radio-button-demo"
-                            inputProps={{ 'aria-label': 'Personal Reasons' }}
-                          />
-                          Personal reasons
                         </div>
-                        <div onClick={() => this.handleRadioChange('health')}>
-                          <Radio
-                            checked={this.state.selectedRadio === 'health'}
-                            // onChange={() => this.handleRadioChange('health')}
-                            value="Health issues"
-                            name="radio-button-demo"
-                            inputProps={{ 'aria-label': 'Health issues' }}
-                          />
-                          Health issues
+                          <div onClick={() => this.handleRadioChange('personal')}>
+                            <Radio
+                              checked={this.state.selectedRadio === 'personal'}
+                              // onChange={() => this.handleRadioChange('personal')}
+                              value="Personal reasons"
+                              name="radio-button-demo"
+                              inputProps={{ 'aria-label': 'Personal Reasons' }}
+                            />
+                            Personal reasons
+                          </div>
+                          <div onClick={() => this.handleRadioChange('health')}>
+                            <Radio
+                              checked={this.state.selectedRadio === 'health'}
+                              // onChange={() => this.handleRadioChange('health')}
+                              value="Health issues"
+                              name="radio-button-demo"
+                              inputProps={{ 'aria-label': 'Health issues' }}
+                            />
+                            Health issues
+                          </div>
+                          <div onClick={() => this.handleRadioChange('DontFeelLikeComing')}>
+                            <Radio
+                              checked={this.state.selectedRadio === 'DontFeelLikeComing'}
+                              // onChange={() => this.handleRadioChange('DontFeelLikeComing')}
+                              value="Don’t feel like coming"
+                              name="radio-button-demo"
+                              inputProps={{ 'aria-label': 'Don’t feel like coming' }}
+                            />
+                            Don’t feel like coming
+                          </div>
                         </div>
-                        <div onClick={() => this.handleRadioChange('DontFeelLikeComing')}>
-                          <Radio
-                            checked={this.state.selectedRadio === 'DontFeelLikeComing'}
-                            // onChange={() => this.handleRadioChange('DontFeelLikeComing')}
-                            value="Don’t feel like coming"
-                            name="radio-button-demo"
-                            inputProps={{ 'aria-label': 'Don’t feel like coming' }}
-                          />
-                          Don’t feel like coming
+                        :
+
+                        <div>
+                          {this.state.errorMsg}
                         </div>
-                      </div>
-                    :
-                    
-                    <div>
-                      {this.state.errorMsg}
-                    </div>
-                  }
+                    }
                     {/* <div className="submit-wrapper">
                       <Button variant="contained" className='submit'
                       onClick={() => this.handleSubmit()}>
@@ -408,43 +411,44 @@ class Home extends Component {
                         }
                       </Button>
                     </div> */}
-                </div>
-                 :
-                  <div>
-                    Hope you have a great day!
                   </div>
-                  }
-              </DialogContentText>
-            </DialogContent>
+                  :
+                  <span>
+                    Hope you have a great day!
+                  </span>
+                }
+              </div>
+            </div>
             <DialogActions className="submit-button-wrapper">
               {
-                !this.state.errorMsg ?
+                !this.state.errorMsg
+                  ?
                   <Button variant="contained" className='submit'
-                  onClick={() => this.handleSubmit()}>
+                          onClick={() => this.handleSubmit()}>
                     {
                       this.state.submitLoading ? <CircularProgress color="secondary" />
-                      : 'submit'
+                        : 'submit'
                     }
                   </Button>
-                :
+                  :
                   <Button
                     variant="contained"
                     className='submit'
                     onClick={() => this.closeDialog()}>
                     {
                       this.state.submitLoading ? <CircularProgress color="secondary" />
-                      : 'Close'
+                        : 'Close'
                     }
                   </Button>
               }
             </DialogActions>
           </div>
         </Dialog>
-        
-    </div>
+
+      </div>
     )
   }
-   
+
 }
 
 export default Home;
