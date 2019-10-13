@@ -77,7 +77,7 @@ class Home extends Component {
 
   handleClose = (event) => {
     console.log('snackbar closed');
-    this.setState({flag_WFH: false, flag_PRESENT : false});
+    this.setState({flag_WFH: false, flag_PRESENT : false, errorMsg: null});
   }
 
   handleOption = async (option) => {
@@ -112,8 +112,9 @@ class Home extends Component {
     // if ( !gotGeolocation) {
 
     // }
-    let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation});
-    console.log('submit result :',result)
+    let result = await API.postAttendance(user_id, {status: this.state.selectedOption, geoLocation: this.state.geoLocation, wfhReason: this.state.selectedRadio});
+    this.checkIfAttendanceMarked();
+    console.log('submit result :',result);
     if (result.success ) {
       try {
         window.navigator.vibrate(100);
@@ -146,9 +147,9 @@ class Home extends Component {
     }
   }
 
-  closeDialog = () => {
-    this.setState({flag_PRESENT: false, flag_WFH: false});
-  }
+  // closeDialog = () => {
+  //   this.setState({flag_PRESENT: false, flag_WFH: false});
+  // }
 
   getGeoLocation = async () => {
     return new Promise( (resolve, reject) => {
@@ -176,7 +177,7 @@ class Home extends Component {
   checkIfValidTimeForWFH = ( ) => {
     let hr =  new Date().getHours();
     let min = new Date().getMinutes();
-    if (hr <= 10) {
+    if (hr < 10) {
       this.setState({wfhDisabled: false});
     } 
     else if (hr === 10  &&  min <= 30) {
@@ -276,7 +277,8 @@ class Home extends Component {
               // : 
                 <div className="options-wrapper">
                   {
-                    !this.state.hasMarkedTodayAttendance
+                    // !this.state.hasMarkedTodayAttendance || !this.state.wfhDisabled
+                    this.state.wfhDisabled
                       ?
                         <div className="option-1" onClick={() => this.handleOption('wfh')}>
                           <Button variant="contained" className='option-button'>
@@ -286,7 +288,7 @@ class Home extends Component {
                       : null
                   }
                   {
-                    this.state.hasMarkedTodayAttendance && this.state.todayAttendanceType === 'present' 
+                    this.state.hasMarkedTodayAttendance && this.state.todayAttendanceType !== 'wfh' 
                       ?
                         null
                       :
@@ -418,7 +420,8 @@ class Home extends Component {
             </DialogContent>
             <DialogActions className="submit-button-wrapper">
               {
-                !this.state.errorMsg ?
+                !this.state.errorMsg
+                ?
                   <Button variant="contained" className='submit'
                   onClick={() => this.handleSubmit()}>
                     {
@@ -430,7 +433,7 @@ class Home extends Component {
                   <Button
                     variant="contained"
                     className='submit'
-                    onClick={() => this.closeDialog()}>
+                    onClick={() => this.handleClose()}>
                     {
                       this.state.submitLoading ? <CircularProgress color="secondary" />
                       : 'Close'
