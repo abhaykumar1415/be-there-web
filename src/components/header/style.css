@@ -10,3 +10,21 @@
   justify-content: center;
   justify-content: space-between;
 }
+
+.header-wrapper-content.MuiToolbar-gutters {
+  padding: 0 24px;
+}
+
+@media only screen and (min-width: 425px) {
+  .header-wrapper-content.MuiToolbar-gutters {
+    padding: 0;
+  }
+}
+
+@media only screen and (min-width: 425px) {
+  header.header-wrapper {
+    max-width: 425px;
+    margin: 0 auto;
+    left: 0;
+  }
+}

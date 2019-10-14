@@ -78,7 +78,7 @@ class Header extends Component{
 
 
   handleDrawerOpen = () => {
-    this.setState({open:true}) 
+    this.setState({open:true})
   };
 
   handleDrawerClose = () => {
@@ -94,17 +94,17 @@ class Header extends Component{
             className="header-wrapper"
           >
             <Toolbar className="header-wrapper-content">
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={this.handleDrawerOpen}
-                edge="start"
-                className={clsx(classes.menuButton, this.state.open && classes.hide)}
-              >
+              {/*<IconButton*/}
+                {/*color="inherit"*/}
+                {/*aria-label="open drawer"*/}
+                {/*onClick={this.handleDrawerOpen}*/}
+                {/*edge="start"*/}
+                {/*className={clsx(classes.menuButton, this.state.open && classes.hide)}*/}
+              {/*>*/}
                 <img src={require('../../assets/hamburger.png')} alt="logo" className="header-icon"/>
-              </IconButton>
+              {/*</IconButton>*/}
               {/* <img src={require('../../assets/hamburger.png')} alt="logo" /> */}
-                
+
                 <img src={require('../../assets/qed_logo.png')} alt="logo" className="header-icon"/>
 
 
